@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
+using System;
 
 /// <summary>
 /// This is the main type for your game.
@@ -26,6 +27,8 @@ namespace CamTest
         Vector2 crosshairLocation = new Vector2(370, 200);
         bool canshoot = true;
         int timeuntilnextbullet = 0;
+        double uprecoil = -5;
+        Random rnd = new Random();
         //shooting
 
         private BasicEffect basicEffect; 
@@ -120,13 +123,21 @@ namespace CamTest
                 canshoot = false;
                 timeuntilnextbullet = 0;
 
-                cam.RotateUpOrDown(gameTime, -5);       //up recoil
-                cam.RotateLeftOrRight(gameTime, 2);     //right recoil
+                double random = rnd.Next(-2, 2);
+                if (cam.crouching)
+                {
+                    random = random / 2;
+                    uprecoil = uprecoil/2;
+                }
+                int leftorright = Convert.ToInt32(Math.Round(random));
+                int uprecoilfinal = Convert.ToInt32(Math.Round(uprecoil));
+                cam.RotateUpOrDown(gameTime, -5);       //upwards recoil is always 5
+                cam.RotateLeftOrRight(gameTime, leftorright);     //right recoil is random between 2 to the left and 2 to the right
             }
             if (!canshoot)
             {
                 timeuntilnextbullet++;
-                if (timeuntilnextbullet >= 20)  //firerate = 3 per second (60 updates per second / 20 = 3)
+                if (timeuntilnextbullet >= 5)  //firerate = 3 per second (60 updates per second / 20 = 3)
                     canshoot = true;
             }
 
@@ -135,12 +146,12 @@ namespace CamTest
             {
                 if(bullet.shooting)
                 {
-                    if (bullet.bulletCount >= 600)
+                    if (bullet.bulletCount >= 20)
                         bullet.shooting = false;
 
                     bullet.bulletsWorld = Matrix.CreateTranslation(bullet.Position);
                     bullet.bulletsWorld = Matrix.CreateWorld(bullet.bulletsWorld.Translation, bullet.bulletsWorld.Forward, Vector3.Up);
-                    bullet.Position += (bullet.Direction * 10f) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    bullet.Position += (bullet.Direction * bullet.Velocity) * (float)gameTime.ElapsedGameTime.TotalSeconds;
                     bullet.bulletCount++;
                 }
                 else

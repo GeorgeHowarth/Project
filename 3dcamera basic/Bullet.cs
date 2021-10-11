@@ -13,7 +13,7 @@ namespace CamTest
     {
         public Basic3dExampleCamera cam;
         public Vector3 Direction;
-        public float Velocity = 30f;
+        public float Velocity = 100f;
         public Vector3 Position;
         public bool IsVisible;
         public bool shooting;
