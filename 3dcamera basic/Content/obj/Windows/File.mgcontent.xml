@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SourceFile>C:/Users/AQ202918/Downloads/3dcamera basic-20210616T115809Z-001/3dcamera basic/3dcamera basic/Content/File.fx</SourceFile>
+  <SourceTime>2021-06-16T12:58:36.2306406+01:00</SourceTime>
+  <DestFile>C:/Users/AQ202918/Downloads/3dcamera basic-20210616T115809Z-001/3dcamera basic/3dcamera basic/Content/bin/Windows/File.xnb</DestFile>
+  <DestTime>2021-06-30T13:29:03.2217012+01:00</DestTime>
+  <Importer>EffectImporter</Importer>
+  <ImporterTime>2018-09-23T22:55:52+01:00</ImporterTime>
+  <Processor>EffectProcessor</Processor>
+  <ProcessorTime>2018-09-23T22:55:52+01:00</ProcessorTime>
+  <Parameters>
+    <Key>DebugMode</Key>
+    <Value>Auto</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>

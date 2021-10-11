@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30517.126
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "3dcamera basic", "3dcamera basic.csproj", "{7DB3A077-6B05-48B6-ACF1-C339C1288C78}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7DB3A077-6B05-48B6-ACF1-C339C1288C78}.Debug|x86.ActiveCfg = Debug|x86
+		{7DB3A077-6B05-48B6-ACF1-C339C1288C78}.Debug|x86.Build.0 = Debug|x86
+		{7DB3A077-6B05-48B6-ACF1-C339C1288C78}.Release|x86.ActiveCfg = Release|x86
+		{7DB3A077-6B05-48B6-ACF1-C339C1288C78}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DE003E56-4A15-46DC-BD95-852A89659F42}
+	EndGlobalSection
+EndGlobal
