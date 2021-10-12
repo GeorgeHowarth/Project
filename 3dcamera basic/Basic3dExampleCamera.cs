@@ -34,6 +34,7 @@ namespace CamTest
 
         public double totalTime = 0;
 
+        public bool moving = false;
         public bool jumping = false;
         public bool crouching = false;
         public bool sprinting = false;
@@ -185,22 +186,34 @@ namespace CamTest
                 Position = new Vector3(Position.X, Position.Y + unitsPerSecondJump, Position.Z);
             }
             if (totalTime > 35 && jumping)
-               jumping = false;         
-                //jump code end
+               jumping = false;
+            //jump code end
 
-
+            moving = false;
             if (kstate.IsKeyDown(Keys.W))   //forward
+            {
                 MoveForward(gameTime);
+                moving = true;
+            }
             
             if (kstate.IsKeyDown(Keys.S) == true) //back 
+            {
                 MoveBackward(gameTime);
+                moving = true;
+            }
             
             if (kstate.IsKeyDown(Keys.A) == true) //left
+            {
                 MoveLeft(gameTime);
+                moving = true;
+            }
             
             if (kstate.IsKeyDown(Keys.D) == true) //right 
+            {
                 MoveRight(gameTime);
-            
+                moving = true;
+            }
+           
             if (kstate.IsKeyDown(Keys.LeftShift) == true)  //sprint 
                 sprinting = true;
             

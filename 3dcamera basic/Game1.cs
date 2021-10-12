@@ -24,13 +24,11 @@ namespace CamTest
         Texture2D textureRight;
         Texture2D textureUp;
         Texture2D crosshair;
-        Vector2 crosshairLocation = new Vector2(370, 200);
+        Vector2 crosshairLocation = new Vector2(351, 216);
         bool canshoot = true;
         int timeuntilnextbullet = 0;
         int uprecoil = -5;
         Random rnd = new Random();
-        Vector3[] PositionsArray = new Vector3[2];
-        bool positions = true;
         //shooting
 
         private BasicEffect basicEffect; 
@@ -92,16 +90,6 @@ namespace CamTest
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (positions)                //takes the previous updates camera position and the current one so they can be compared to determine if the player is moving
-            {
-                PositionsArray[0] = cam.Position;
-                positions = false;
-            }
-            else
-            {
-                PositionsArray[1] = cam.Position;
-                positions = true;
-            }
             MouseState state = Mouse.GetState();
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
@@ -137,7 +125,7 @@ namespace CamTest
                 //start recoil code
                 double random = rnd.Next(-2, 2);
                 uprecoil = -5;
-                if(PositionsArray[0] != PositionsArray[1]) // if moving, recoil is increased
+                if(cam.moving) // if moving, recoil is increased
                 {
                     random = random * 4;
                     uprecoil = -10;
