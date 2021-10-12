@@ -92,7 +92,7 @@ namespace CamTest
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (positions)
+            if (positions)                //takes the previous updates camera position and the current one so they can be compared to determine if the player is moving
             {
                 PositionsArray[0] = cam.Position;
                 positions = false;
@@ -124,7 +124,7 @@ namespace CamTest
 
             if (state.LeftButton == ButtonState.Pressed && canshoot)
             {
-                Bullet newBullet = new Bullet();
+                Bullet newBullet = new Bullet();                         //creates a new bullet using the bullet class
                 newBullet.Position= cam.Position;
                 newBullet.shooting = true;
                 newBullet.Direction = cam.camerasWorld.Forward;
@@ -132,30 +132,30 @@ namespace CamTest
                 newBullet.model = Content.Load<Model>(@"Sphere");
 
                 bulletList.Add(newBullet);
-                canshoot = false;
+                canshoot = false;             //controls the fire rate
                 timeuntilnextbullet = 0;
                 //start recoil code
                 double random = rnd.Next(-2, 2);
                 uprecoil = -5;
-                if(PositionsArray[0] != PositionsArray[1]) // if moving
+                if(PositionsArray[0] != PositionsArray[1]) // if moving, recoil is increased
                 {
                     random = random * 4;
                     uprecoil = -10;
                 }
-                if (cam.crouching)
+                if (cam.crouching)    //if crouching recoil is reduced
                 {
                     random = random / 2;
                     uprecoil = -2;
                 }
-                else if (cam.jumping)
+                else if (cam.jumping)  //if jumping recoil is massively increased
                 {
                     random = random * 6;
                     uprecoil = -15;
                 }
 
                 int leftorright = Convert.ToInt32(Math.Round(random));
-                cam.RotateUpOrDown(gameTime, uprecoil);       //upwards recoil is 5 when standing, 2 when crouching
-                cam.RotateLeftOrRight(gameTime, leftorright);     //right recoil is random between 2 to the left and 2 to the right, halfed and then rounded when crouching
+                cam.RotateUpOrDown(gameTime, uprecoil);       //upwards recoil is 5 when standing
+                cam.RotateLeftOrRight(gameTime, leftorright);     //right recoil is random between 2 to the left and 2 to the right but changed based on movement
                 //end recoil code
             }
             if (!canshoot)
@@ -166,7 +166,7 @@ namespace CamTest
             }
 
 
-            foreach(Bullet bullet in bulletList)
+            foreach(Bullet bullet in bulletList)               //this piece of code handles how each bullet moves
             {
                 if(bullet.shooting)
                 {

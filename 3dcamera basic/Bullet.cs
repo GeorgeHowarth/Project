@@ -20,14 +20,14 @@ namespace CamTest
         public Model model;
         public Matrix bulletsWorld = Matrix.Identity;
         public Vector3 Up = Vector3.Up;
-        public float bulletCount;
+        public float bulletCount; //counter for how many updates the bullet has been drawn for
         
         public Vector3 bulletPosition
         {
             set
             {
                 bulletsWorld.Translation = value;
-                bulletsWorld = Matrix.CreateWorld(bulletsWorld.Translation, bulletsWorld.Forward, Up);
+                bulletsWorld = Matrix.CreateWorld(bulletsWorld.Translation, bulletsWorld.Forward, Up); //sets and gets the p;osition of the bullet
             }
             get { return bulletsWorld.Translation; }
         }

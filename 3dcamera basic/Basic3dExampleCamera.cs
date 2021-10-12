@@ -228,21 +228,6 @@ namespace CamTest
                     unitsPerSecond = 5;                                     //normal run speed = 5
                 }
             }
-            // shoot controls
-            /*if (state.LeftButton == ButtonState.Pressed && !shooting)
-            {
-                BulletPositions.Clear();
-                bulletPosition = Position;
-                shooting = true;
-                BulletDirection = camerasWorld.Forward;
-            }    
-            if(shooting)
-            {
-                if (BulletPositions.Count >= 120) //bullets only move for 120 frames (2 seconds)
-                    shooting = false;
-                bulletPosition += (BulletDirection * BulletVelocity) * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                BulletPositions.Add(bulletPosition);            }*/
-            //Position = bulletPosition;    //test to see if bullets are working
         }
         public Vector2 MouseMovement()               //mouse is set to x400 y240 every update, this tracks how far from these coordinates it is
         {
