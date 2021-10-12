@@ -27,8 +27,10 @@ namespace CamTest
         Vector2 crosshairLocation = new Vector2(370, 200);
         bool canshoot = true;
         int timeuntilnextbullet = 0;
-        double uprecoil = -5;
+        int uprecoil = -5;
         Random rnd = new Random();
+        Vector3[] PositionsArray = new Vector3[2];
+        bool positions = true;
         //shooting
 
         private BasicEffect basicEffect; 
@@ -90,6 +92,16 @@ namespace CamTest
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            if (positions)
+            {
+                PositionsArray[0] = cam.Position;
+                positions = false;
+            }
+            else
+            {
+                PositionsArray[1] = cam.Position;
+                positions = true;
+            }
             MouseState state = Mouse.GetState();
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
@@ -122,22 +134,34 @@ namespace CamTest
                 bulletList.Add(newBullet);
                 canshoot = false;
                 timeuntilnextbullet = 0;
-
+                //start recoil code
                 double random = rnd.Next(-2, 2);
+                uprecoil = -5;
+                if(PositionsArray[0] != PositionsArray[1]) // if moving
+                {
+                    random = random * 4;
+                    uprecoil = -10;
+                }
                 if (cam.crouching)
                 {
                     random = random / 2;
-                    uprecoil = uprecoil/2;
+                    uprecoil = -2;
                 }
+                else if (cam.jumping)
+                {
+                    random = random * 6;
+                    uprecoil = -15;
+                }
+
                 int leftorright = Convert.ToInt32(Math.Round(random));
-                int uprecoilfinal = Convert.ToInt32(Math.Round(uprecoil));
-                cam.RotateUpOrDown(gameTime, -5);       //upwards recoil is always 5
-                cam.RotateLeftOrRight(gameTime, leftorright);     //right recoil is random between 2 to the left and 2 to the right
+                cam.RotateUpOrDown(gameTime, uprecoil);       //upwards recoil is 5 when standing, 2 when crouching
+                cam.RotateLeftOrRight(gameTime, leftorright);     //right recoil is random between 2 to the left and 2 to the right, halfed and then rounded when crouching
+                //end recoil code
             }
             if (!canshoot)
             {
                 timeuntilnextbullet++;
-                if (timeuntilnextbullet >= 5)  //firerate = 3 per second (60 updates per second / 20 = 3)
+                if (timeuntilnextbullet >= 5)  //firerate
                     canshoot = true;
             }
 
