@@ -11,7 +11,6 @@ namespace CamTest
 {
     public class Bullet 
     {
-        public Basic3dExampleCamera cam;
         public Vector3 Direction;
         public float Velocity = 100f;
         public Vector3 Position;
@@ -27,7 +26,7 @@ namespace CamTest
             set
             {
                 bulletsWorld.Translation = value;
-                bulletsWorld = Matrix.CreateWorld(bulletsWorld.Translation, bulletsWorld.Forward, Up); //sets and gets the p;osition of the bullet
+                bulletsWorld = Matrix.CreateWorld(bulletsWorld.Translation, bulletsWorld.Forward, Up); //sets and gets the position of the bullet
             }
             get { return bulletsWorld.Translation; }
         }

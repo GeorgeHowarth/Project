@@ -16,7 +16,7 @@ namespace CamTest
         BasicEffect beffect;
         Basic3dExampleCamera cam;
         Matrix camWorldObjectToVisualize = Matrix.Identity;
-
+        
         Grid3dOrientation worldGrid = new Grid3dOrientation(20, 20, .01f);
         OrientationLines orientationLines = new OrientationLines(.2f, 1f);
 
@@ -36,6 +36,7 @@ namespace CamTest
 
 
         List<Bullet> bulletList = new List<Bullet>();
+        Target[] Buttons = new Target[3];
 
 
         public Game1()
@@ -48,6 +49,29 @@ namespace CamTest
         protected override void Initialize()
         {
             base.Initialize();
+            Target startButton = new Target();
+            startButton.Position = cam.Position;
+            startButton.Direction = cam.camerasWorld.Forward;      //creates the start button
+            startButton.IsVisible = true;
+            startButton.Position = new Vector3(0,3,-10);
+            startButton.model = Content.Load<Model>(@"cube");
+            Buttons[0] = startButton;
+
+            Target settingsButton = new Target();
+            settingsButton.Position = cam.Position;
+            settingsButton.Direction = cam.camerasWorld.Forward;      //creates the settings button
+            settingsButton.IsVisible = true;
+            settingsButton.Position = new Vector3(-10, 3, -10);
+            settingsButton.model = Content.Load<Model>(@"cube");
+            Buttons[1] = settingsButton;
+
+            Target quitButton = new Target();
+            quitButton.Position = cam.Position;
+            quitButton.Direction = cam.camerasWorld.Forward;        //creates the quit button
+            quitButton.IsVisible = true;
+            quitButton.Position = new Vector3(10, 3, -10);
+            quitButton.model = Content.Load<Model>(@"cube");
+            Buttons[2] = quitButton;
         }
 
         protected override void LoadContent()
@@ -102,24 +126,11 @@ namespace CamTest
 
             camWorldObjectToVisualize = Matrix.CreateWorld(Vector3.One, cam.LookAtDirection, Vector3.Up);
             //shooting
-            foreach(Bullet bullet in bulletList)
-            {
-                //bullet.Position = cam.bulletPosition;
-                bullet.bulletsWorld = Matrix.CreateTranslation(bullet.Position);
-            }
-
             base.Update(gameTime);
 
             if (state.LeftButton == ButtonState.Pressed && canshoot)
             {
-                Bullet newBullet = new Bullet();                         //creates a new bullet using the bullet class
-                newBullet.Position= cam.Position;
-                newBullet.shooting = true;
-                newBullet.Direction = cam.camerasWorld.Forward;
-                newBullet.IsVisible = true;
-                newBullet.model = Content.Load<Model>(@"Sphere");
-
-                bulletList.Add(newBullet);
+                CreateNewBullet();
                 canshoot = false;             //controls the fire rate
                 timeuntilnextbullet = 0;
                 //start recoil code
@@ -153,10 +164,15 @@ namespace CamTest
                     canshoot = true;
             }
 
+            UpdateObjects(gameTime);
+        }
 
-            foreach(Bullet bullet in bulletList)               //this piece of code handles how each bullet moves
+        public void UpdateObjects(GameTime gt) 
+        {
+            GameTime gameTime = gt;
+            foreach (Bullet bullet in bulletList)               //this piece of code handles how each bullet moves
             {
-                if(bullet.shooting)
+                if (bullet.shooting)
                 {
                     if (bullet.bulletCount >= 20)
                         bullet.shooting = false;
@@ -171,12 +187,24 @@ namespace CamTest
                     bullet.IsVisible = false;
                 }
             }
-            foreach(Bullet bullet in bulletList)
+            foreach (Target button in Buttons)
             {
-                bullet.bulletsWorld = Matrix.CreateTranslation(bullet.Position);
+                button.targetsWorld = Matrix.CreateTranslation(button.Position); //idk what this does, i just copied it from my bullet code which i wrote myself so i understood it at some point
+                button.targetsWorld = Matrix.CreateWorld(button.targetsWorld.Translation, button.targetsWorld.Forward, Vector3.Up);
             }
         }
 
+        public void CreateNewBullet()
+        {
+            Bullet newBullet = new Bullet();                         //creates a new bullet using the bullet class
+            newBullet.Position = cam.Position;
+            newBullet.shooting = true;
+            newBullet.Direction = cam.camerasWorld.Forward;
+            newBullet.IsVisible = true;
+            newBullet.model = Content.Load<Model>(@"Sphere");
+
+            bulletList.Add(newBullet);
+        }
 
         /// <summary>
         /// This is called when the game should draw itself.
@@ -190,7 +218,6 @@ namespace CamTest
 
             worldGrid.DrawWithBasicEffect(GraphicsDevice, beffect, Matrix.Identity, 30f, textureForward, textureRight, textureUp);
 
-            //orientationLines.DrawWithBasicEffect(GraphicsDevice, beffect, camWorldObjectToVisualize);
             orientationLines.DrawWithBasicEffect(GraphicsDevice, beffect, Matrix.Identity);
             
             spriteBatch.Begin();
@@ -199,7 +226,25 @@ namespace CamTest
             base.Draw(gameTime);
 
             //shooting
-            foreach(Bullet bullet in bulletList)
+
+            foreach(Target button in Buttons)
+            {
+                foreach (ModelMesh mesh in button.model.Meshes)
+                {
+                    foreach (BasicEffect effect in mesh.Effects)
+                    {
+                        effect.EnableDefaultLighting();
+                        effect.World = button.targetsWorld;
+                        effect.View = cam.ViewMatrix;
+                        effect.Projection = cam.ProjectionMatrix;
+                    }
+                    mesh.Draw();
+                }
+            }
+
+
+
+            foreach (Bullet bullet in bulletList)
             {
                 if (bullet.IsVisible)
                 foreach (ModelMesh mesh in bullet.model.Meshes)
@@ -215,6 +260,9 @@ namespace CamTest
                 }
             }
 
+
+
+            
         }
 
         // this just makes a texture so it doesn't have to be loaded.
