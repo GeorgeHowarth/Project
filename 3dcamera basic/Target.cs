@@ -18,7 +18,7 @@ namespace CamTest
         public Model model;
         public Matrix targetsWorld = Matrix.Identity;
         public Vector3 Up = Vector3.Up;
-      
+        public int Counter;
 
         public Vector3 targetPosition
         {
