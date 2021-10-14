@@ -82,9 +82,9 @@ namespace CamTest
             cam.Position = new Vector3(0, 1, 10);
             cam.Target = Vector3.Zero;
 
-            textureForward = CreateCheckerBoard(GraphicsDevice, 20, 20, Color.Red, Color.Red);
-            textureRight = CreateCheckerBoard(GraphicsDevice, 20, 20, Color.Yellow, Color.Yellow);
-            textureUp = CreateCheckerBoard(GraphicsDevice, 20, 20, Color.Blue, Color.Blue);
+            textureForward = CreateCheckerBoard(GraphicsDevice, 20, 20, Color.Red, Color.Red);      // creates red X CheckerBoard
+            textureRight = CreateCheckerBoard(GraphicsDevice, 20, 20, Color.Yellow, Color.Yellow);  // creates yellow Y CheckerBoard
+            textureUp = CreateCheckerBoard(GraphicsDevice, 20, 20, Color.Blue, Color.Blue);         // creates blue Z CheckerBoard
 
             beffect.VertexColorEnabled = true;
             beffect.TextureEnabled = true;
@@ -165,6 +165,17 @@ namespace CamTest
             }
 
             UpdateObjects(gameTime);
+
+            foreach(Bullet bullet in bulletList)
+            {
+                foreach(Target button in Buttons)
+                {
+                    if(Vector3.Distance(bullet.bulletPosition, button.targetPosition) < 1.5)  //checks if bullet is within a circle of radius 1.5 and if so does something
+                    {
+                        button.IsVisible = false;
+                    }
+                }
+            }
         }
 
         public void UpdateObjects(GameTime gt) 
@@ -229,6 +240,7 @@ namespace CamTest
 
             foreach(Target button in Buttons)
             {
+                if(button.IsVisible)
                 foreach (ModelMesh mesh in button.model.Meshes)
                 {
                     foreach (BasicEffect effect in mesh.Effects)
@@ -265,7 +277,7 @@ namespace CamTest
             
         }
 
-        // this just makes a texture so it doesn't have to be loaded.
+        //creates the checkerboard pattern
         public static Texture2D CreateCheckerBoard(GraphicsDevice device, int w, int h, Color c0, Color c1)
         {
             Color[] data = new Color[w * h];

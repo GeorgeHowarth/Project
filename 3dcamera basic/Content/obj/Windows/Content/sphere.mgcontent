@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <SourceFile>C:/Users/georg/Downloads/Project-main/3dcamera basic/Content/globe-sphere.fbx</SourceFile>
-  <SourceTime>2021-10-12T12:05:52+01:00</SourceTime>
-  <DestFile>C:/Users/georg/Downloads/Project-main/3dcamera basic/Content/bin/Windows/Content/sphere.xnb</DestFile>
-  <DestTime>2021-10-12T21:00:55.4775103+01:00</DestTime>
+  <SourceFile>H:/Computer Science/Project-main/Project-main/3dcamera basic/Content/globe-sphere.fbx</SourceFile>
+  <SourceTime>2021-10-14T08:58:28.5900206+01:00</SourceTime>
+  <DestFile>H:/Computer Science/Project-main/Project-main/3dcamera basic/Content/bin/Windows/Content/sphere.xnb</DestFile>
+  <DestTime>2021-10-14T08:59:18.8106764+01:00</DestTime>
   <Importer>FbxImporter</Importer>
-  <ImporterTime>2018-12-08T16:35:54+00:00</ImporterTime>
+  <ImporterTime>2018-09-23T22:55:52+01:00</ImporterTime>
   <Processor>ModelProcessor</Processor>
-  <ProcessorTime>2018-12-08T16:35:54+00:00</ProcessorTime>
+  <ProcessorTime>2018-09-23T22:55:52+01:00</ProcessorTime>
   <Parameters>
     <Key>ColorKeyColor</Key>
     <Value>0,0,0,0</Value>

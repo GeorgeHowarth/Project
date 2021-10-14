@@ -13,21 +13,18 @@ namespace CamTest
     {
         private GraphicsDevice graphicsDevice = null;
         private GameWindow gameWindow = null;
-        public float sensitivity = 1f;
+        public float sensitivity = 20f;
         bool invertControls = false;
         private float unitsPerSecond = 5;
         private float unitsPerSecondSprint = 10;
         private float unitsPerSecondJump = 0.15f;
-        private float anglesPerSecond = 20f;
         private float gravity = -0.075f;
         public float BulletVelocity = 15f;
         
 
         public float FieldOfView = MathHelper.PiOver4;
-        public float NearClipPlane = 0.1f;
-        public float FarClipPlane = 200f;
-
-        public Vector3 BulletDirection; //the way the cam was facing when the bullet was shot
+        public float ShortRender = 0.01f;
+        public float LongRender = 200f;        //render distance
 
         public int xValue = 400;
         public int yValue = 240;
@@ -38,9 +35,6 @@ namespace CamTest
         public bool jumping = false;
         public bool crouching = false;
         public bool sprinting = false;
-        public bool shooting = false;
-
-        public List<Vector3> BulletPositions = new List<Vector3>();
 
         /// <summary>
         /// this serves as the cameras up for fixed cameras this might not change at all ever.
@@ -51,7 +45,6 @@ namespace CamTest
         /// it holds all orientational values and is used to move the camera properly thru the world space as well.
         /// </summary>
         public Matrix camerasWorld = Matrix.Identity;
-        public Matrix bulletsWorld = Matrix.Identity;
         /// <summary>
         /// The view matrix is created from the cameras world matrixs but it has special propertys.
         /// Using create look at to create this matrix you move from the world space into the view space.
@@ -71,7 +64,7 @@ namespace CamTest
         /// <summary>
         /// Determines how the camera behaves true for fixed false for free.
         /// </summary>
-        public bool IsFixed { get; set; } = true;
+        //public bool IsFixed { get; set; } = true;
         /// <summary>
         /// Gets or sets the the camera's position in the world.
         /// </summary>
@@ -84,16 +77,6 @@ namespace CamTest
                 ReCreateWorldAndView();
             }
             get { return camerasWorld.Translation; }
-        }
-
-        public Vector3 bulletPosition
-        {
-            set
-            {
-                bulletsWorld.Translation = value;
-                ReCreateWorldAndView();
-            }
-            get { return bulletsWorld.Translation; }
         }
 
         /// <summary>
@@ -128,13 +111,8 @@ namespace CamTest
         /// </summary>
         private void ReCreateWorldAndView()
         {
-            if (IsFixed)
-                Up = Vector3.Up;
-            else
-                Up = camerasWorld.Up;
-            camerasWorld = Matrix.CreateWorld(camerasWorld.Translation, camerasWorld.Forward, Up);
-            bulletsWorld = Matrix.CreateWorld(bulletsWorld.Translation, bulletsWorld.Forward, Up);
-            viewMatrix = Matrix.CreateLookAt(camerasWorld.Translation, camerasWorld.Forward + camerasWorld.Translation, camerasWorld.Up);
+          camerasWorld = Matrix.CreateWorld(camerasWorld.Translation, camerasWorld.Forward, Up);
+          viewMatrix = Matrix.CreateLookAt(camerasWorld.Translation, camerasWorld.Forward + camerasWorld.Translation, camerasWorld.Up);
         }
         /// <summary>
         /// Gets the view matrix.
@@ -154,7 +132,7 @@ namespace CamTest
             get
             {
                 float aspectRatio = graphicsDevice.Viewport.Width / (float)graphicsDevice.Viewport.Height;
-                return Matrix.CreatePerspectiveFieldOfView(FieldOfView, aspectRatio, NearClipPlane, FarClipPlane);
+                return Matrix.CreatePerspectiveFieldOfView(FieldOfView, aspectRatio, ShortRender, LongRender);
             }
         }
 
@@ -163,8 +141,8 @@ namespace CamTest
             MouseState state = Mouse.GetState(gameWindow);
             KeyboardState kstate = Keyboard.GetState();
             // mouse controls
-            RotateLeftOrRight(gameTime, -MouseMovement().X * sensitivity);         //mouse look left/right
-            RotateUpOrDown(gameTime, -MouseMovement().Y * sensitivity);            // mouse look up/down
+            RotateLeftOrRight(gameTime, -MouseMovement().X);         //mouse look left/right
+            RotateUpOrDown(gameTime, -MouseMovement().Y);            // mouse look up/down
             Mouse.SetPosition(400, 240);
 
             // movement controls
@@ -187,7 +165,7 @@ namespace CamTest
             }
             if (totalTime > 35 && jumping)
                jumping = false;
-            //jump code end
+            //jump code end //needs fixing
 
             moving = false;
             if (kstate.IsKeyDown(Keys.W))   //forward
@@ -287,7 +265,7 @@ namespace CamTest
         {
             if (invertControls)
                 amount = -amount;
-            var radians = amount * -anglesPerSecond * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            var radians = amount * -sensitivity * (float)gameTime.ElapsedGameTime.TotalSeconds;
             Matrix matrix = Matrix.CreateFromAxisAngle(camerasWorld.Up, MathHelper.ToRadians(radians));
             LookAtDirection = Vector3.TransformNormal(LookAtDirection, matrix);
             
@@ -297,7 +275,7 @@ namespace CamTest
         {
             if (invertControls)
                 amount = -amount;
-            var radians = amount * -anglesPerSecond * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            var radians = amount * -sensitivity * (float)gameTime.ElapsedGameTime.TotalSeconds;
             Matrix matrix = Matrix.CreateFromAxisAngle(camerasWorld.Right, MathHelper.ToRadians(radians));
             LookAtDirection = Vector3.TransformNormal(LookAtDirection, matrix);
 

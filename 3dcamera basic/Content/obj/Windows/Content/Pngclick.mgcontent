@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <SourceFile>C:/Users/georg/Downloads/Project-main/3dcamera basic/Content/Pngclick.png</SourceFile>
-  <SourceTime>2021-10-12T12:05:52+01:00</SourceTime>
-  <DestFile>C:/Users/georg/Downloads/Project-main/3dcamera basic/Content/bin/Windows/Content/Pngclick.xnb</DestFile>
-  <DestTime>2021-10-12T21:00:55.8085858+01:00</DestTime>
+  <SourceFile>H:/Computer Science/Project-main/Project-main/3dcamera basic/Content/Pngclick.png</SourceFile>
+  <SourceTime>2021-10-14T08:58:28.4640979+01:00</SourceTime>
+  <DestFile>H:/Computer Science/Project-main/Project-main/3dcamera basic/Content/bin/Windows/Content/Pngclick.xnb</DestFile>
+  <DestTime>2021-10-14T08:59:19.4555867+01:00</DestTime>
   <Importer>TextureImporter</Importer>
-  <ImporterTime>2018-12-08T16:35:54+00:00</ImporterTime>
+  <ImporterTime>2018-09-23T22:55:52+01:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
-  <ProcessorTime>2018-12-08T16:35:54+00:00</ProcessorTime>
+  <ProcessorTime>2018-09-23T22:55:52+01:00</ProcessorTime>
   <Parameters>
     <Key>ColorKeyColor</Key>
     <Value>255,0,255,255</Value>
