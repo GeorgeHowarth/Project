@@ -1,8 +1,11 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System.Collections.Generic;
-using System;
 
 /// <summary>
 /// This is the main type for your game.
@@ -50,28 +53,31 @@ namespace CamTest
         {
             base.Initialize();
             Target startButton = new Target();
-            startButton.Position = cam.Position;
-            startButton.Direction = cam.camerasWorld.Forward;      //creates the start button
+            //creates the start button
             startButton.IsVisible = true;
             startButton.Position = new Vector3(0,3,-10);
-            startButton.model = Content.Load<Model>(@"cube");
+            startButton.model = Content.Load<Model>(@"start");
             Buttons[0] = startButton;
 
             Target settingsButton = new Target();
-            settingsButton.Position = cam.Position;
-            settingsButton.Direction = cam.camerasWorld.Forward;      //creates the settings button
+            //creates the settings button
             settingsButton.IsVisible = true;
             settingsButton.Position = new Vector3(-10, 3, -10);
-            settingsButton.model = Content.Load<Model>(@"cube");
+            settingsButton.model = Content.Load<Model>(@"settings");
             Buttons[1] = settingsButton;
 
             Target quitButton = new Target();
-            quitButton.Position = cam.Position;
-            quitButton.Direction = cam.camerasWorld.Forward;        //creates the quit button
+            //creates the quit button
             quitButton.IsVisible = true;
             quitButton.Position = new Vector3(10, 3, -10);
-            quitButton.model = Content.Load<Model>(@"cube");
+            quitButton.model = Content.Load<Model>(@"quit");
             Buttons[2] = quitButton;
+
+            //Target room = new Target();
+            //room.IsVisible = true;
+            //room.Position = new Vector3(0, 0, 0);
+            //room.model = Content.Load<Model>(@"room");
+            //Buttons[3] = room;
         }
 
         protected override void LoadContent()
@@ -168,12 +174,20 @@ namespace CamTest
 
             foreach(Bullet bullet in bulletList)
             {
-                foreach(Target button in Buttons)
+                if (bullet.bulletPosition.X > -1 && bullet.bulletPosition.X < 3 && bullet.bulletPosition.Y > 1 && bullet.bulletPosition.Y < 4 && bullet.Position.Z > -12 && bullet.Position.Z < -8 && bullet.IsVisible)
                 {
-                    if(Vector3.Distance(bullet.bulletPosition, button.targetPosition) < 1.5)  //checks if bullet is within a circle of radius 1.5 and if so does something
-                    {
-                        button.IsVisible = false;
-                    }
+                    Buttons[0].IsVisible = !Buttons[0].IsVisible;
+                    bullet.IsVisible = false;
+                }
+                if (bullet.bulletPosition.X > -11 && bullet.bulletPosition.X < -7 && bullet.bulletPosition.Y > 1 && bullet.bulletPosition.Y < 4 && bullet.Position.Z > -12 && bullet.Position.Z < -8 && bullet.IsVisible)
+                {
+                    Buttons[1].IsVisible = !Buttons[1].IsVisible;
+                    bullet.IsVisible = false;
+                }
+                if (bullet.bulletPosition.X > 9 && bullet.bulletPosition.X < 13 && bullet.bulletPosition.Y > 1 && bullet.bulletPosition.Y < 4 && bullet.Position.Z > -12 && bullet.Position.Z < -8 && bullet.IsVisible)
+                {
+                    Buttons[2].IsVisible = !Buttons[2].IsVisible;
+                    Exit();
                 }
             }
         }
@@ -228,7 +242,7 @@ namespace CamTest
             GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
 
             worldGrid.DrawWithBasicEffect(GraphicsDevice, beffect, Matrix.Identity, 30f, textureForward, textureRight, textureUp);
-
+            
             orientationLines.DrawWithBasicEffect(GraphicsDevice, beffect, Matrix.Identity);
             
             spriteBatch.Begin();
@@ -253,9 +267,6 @@ namespace CamTest
                     mesh.Draw();
                 }
             }
-
-
-
             foreach (Bullet bullet in bulletList)
             {
                 if (bullet.IsVisible)
@@ -271,10 +282,6 @@ namespace CamTest
                     mesh.Draw();
                 }
             }
-
-
-
-            
         }
 
         //creates the checkerboard pattern

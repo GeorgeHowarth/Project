@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <SourceFile>C:/Users/georg/Downloads/Project-main/3dcamera basic/Content/globe-sphere.fbx</SourceFile>
-  <SourceTime>2021-10-12T12:05:52+01:00</SourceTime>
+  <SourceTime>2021-10-14T10:22:26+01:00</SourceTime>
   <DestFile>C:/Users/georg/Downloads/Project-main/3dcamera basic/Content/bin/Windows/sphere.xnb</DestFile>
-  <DestTime>2021-10-13T21:06:44.0534357+01:00</DestTime>
+  <DestTime>2021-11-03T17:06:17.7333917+00:00</DestTime>
   <Importer>FbxImporter</Importer>
   <ImporterTime>2018-12-08T16:35:54+00:00</ImporterTime>
   <Processor>ModelProcessor</Processor>
