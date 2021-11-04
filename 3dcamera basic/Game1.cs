@@ -26,13 +26,10 @@ namespace CamTest
         Texture2D textureForward;
         Texture2D textureRight;
         Texture2D textureUp;
-        Texture2D crosshair;
-        Vector2 crosshairLocation = new Vector2(351, 216);
         bool canshoot = true;
         int timeuntilnextbullet = 0;
-        int uprecoil = -5;
+        int uprecoil;
         Random rnd = new Random();
-        //shooting
 
         private BasicEffect basicEffect; 
         //shooting
@@ -46,7 +43,6 @@ namespace CamTest
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            this.IsMouseVisible = true;
         }
 
         protected override void Initialize()
@@ -97,7 +93,7 @@ namespace CamTest
             beffect.World = Matrix.Identity;
             beffect.Projection = cam.ProjectionMatrix;
 
-            crosshair = Content.Load<Texture2D>(@"crosshair");
+            //crosshair = Content.Load<Texture2D>(@"crosshair");
 
             basicEffect = new BasicEffect(GraphicsDevice);
             basicEffect.View = Matrix.CreateLookAt(new Vector3(50, 50, 50), new Vector3(0, 0, 0), Vector3.Up);
@@ -124,8 +120,8 @@ namespace CamTest
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            if (Keyboard.GetState().IsKeyDown(Keys.F12))
-                graphics.ToggleFullScreen();
+            //if (Keyboard.GetState().IsKeyDown(Keys.F12))
+            //    graphics.ToggleFullScreen();
 
             cam.Update(gameTime);
             beffect.View = cam.ViewMatrix;
@@ -141,21 +137,21 @@ namespace CamTest
                 timeuntilnextbullet = 0;
                 //start recoil code
                 double random = rnd.Next(-2, 2);
-                uprecoil = -5;
+                uprecoil = -2;
                 if(cam.moving) // if moving, recoil is increased
                 {
-                    random = random * 4;
-                    uprecoil = -10;
+                    random = random * 2;
+                    uprecoil = -6;
                 }
                 if (cam.crouching)    //if crouching recoil is reduced
                 {
                     random = random / 2;
-                    uprecoil = -2;
+                    uprecoil = -1;
                 }
                 else if (cam.jumping)  //if jumping recoil is massively increased
                 {
-                    random = random * 6;
-                    uprecoil = -15;
+                    random = random * 3;
+                    uprecoil = -10;
                 }
 
                 int leftorright = Convert.ToInt32(Math.Round(random));
@@ -174,27 +170,28 @@ namespace CamTest
 
             foreach(Bullet bullet in bulletList)
             {
-                if (bullet.bulletPosition.X > -1 && bullet.bulletPosition.X < 3 && bullet.bulletPosition.Y > 1 && bullet.bulletPosition.Y < 4 && bullet.Position.Z > -12 && bullet.Position.Z < -8 && bullet.IsVisible)
+                //start
+                if (bullet.bulletPosition.X > -1 && bullet.bulletPosition.X < 3 && bullet.bulletPosition.Y > 1 && bullet.bulletPosition.Y < 4 && bullet.Position.Z > -12 && bullet.Position.Z < -8 && bullet.IsVisible) //placeholder for collision
                 {
-                    Buttons[0].IsVisible = !Buttons[0].IsVisible;
+                    cam.Position = new Vector3(100, 0, 100); // moves the player when "start" button hit
                     bullet.IsVisible = false;
                 }
-                if (bullet.bulletPosition.X > -11 && bullet.bulletPosition.X < -7 && bullet.bulletPosition.Y > 1 && bullet.bulletPosition.Y < 4 && bullet.Position.Z > -12 && bullet.Position.Z < -8 && bullet.IsVisible)
+                //settings
+                if (bullet.bulletPosition.X > -11 && bullet.bulletPosition.X < -7 && bullet.bulletPosition.Y > 1 && bullet.bulletPosition.Y < 4 && bullet.Position.Z > -12 && bullet.Position.Z < -8 && bullet.IsVisible) //placeholder for collision
                 {
                     Buttons[1].IsVisible = !Buttons[1].IsVisible;
                     bullet.IsVisible = false;
                 }
-                if (bullet.bulletPosition.X > 9 && bullet.bulletPosition.X < 13 && bullet.bulletPosition.Y > 1 && bullet.bulletPosition.Y < 4 && bullet.Position.Z > -12 && bullet.Position.Z < -8 && bullet.IsVisible)
+                //quit
+                if (bullet.bulletPosition.X > 9 && bullet.bulletPosition.X < 13 && bullet.bulletPosition.Y > 1 && bullet.bulletPosition.Y < 4 && bullet.Position.Z > -12 && bullet.Position.Z < -8 && bullet.IsVisible) //placeholder for collision
                 {
-                    Buttons[2].IsVisible = !Buttons[2].IsVisible;
-                    Exit();
+                    Exit(); //closes game when quit button hit
                 }
             }
         }
 
         public void UpdateObjects(GameTime gt) 
         {
-            GameTime gameTime = gt;
             foreach (Bullet bullet in bulletList)               //this piece of code handles how each bullet moves
             {
                 if (bullet.shooting)
@@ -204,7 +201,7 @@ namespace CamTest
 
                     bullet.bulletsWorld = Matrix.CreateTranslation(bullet.Position);
                     bullet.bulletsWorld = Matrix.CreateWorld(bullet.bulletsWorld.Translation, bullet.bulletsWorld.Forward, Vector3.Up);
-                    bullet.Position += (bullet.Direction * bullet.Velocity) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    bullet.Position += (bullet.Direction * bullet.Velocity) * (float)gt.ElapsedGameTime.TotalSeconds;
                     bullet.bulletCount++;
                 }
                 else
@@ -214,8 +211,7 @@ namespace CamTest
             }
             foreach (Target button in Buttons)
             {
-                button.targetsWorld = Matrix.CreateTranslation(button.Position); //idk what this does, i just copied it from my bullet code which i wrote myself so i understood it at some point
-                button.targetsWorld = Matrix.CreateWorld(button.targetsWorld.Translation, button.targetsWorld.Forward, Vector3.Up);
+                button.targetsWorld = Matrix.CreateWorld(Matrix.CreateTranslation(button.Position).Translation, button.targetsWorld.Forward, Vector3.Up);
             }
         }
 
@@ -242,12 +238,8 @@ namespace CamTest
             GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
 
             worldGrid.DrawWithBasicEffect(GraphicsDevice, beffect, Matrix.Identity, 30f, textureForward, textureRight, textureUp);
-            
+
             orientationLines.DrawWithBasicEffect(GraphicsDevice, beffect, Matrix.Identity);
-            
-            spriteBatch.Begin();
-            spriteBatch.Draw(crosshair, crosshairLocation, Color.White);
-            spriteBatch.End();
             base.Draw(gameTime);
 
             //shooting
@@ -311,7 +303,7 @@ namespace CamTest
                     data[index] = c;
                 }
             }
-            Texture2D tex = new Texture2D(device, w, h);
+            Texture2D tex = new Texture2D(device,w,h);
             tex.SetData<Color>(data);
             return tex;
         }

@@ -17,8 +17,7 @@ namespace CamTest
         bool invertControls = false;
         private float unitsPerSecond = 5;
         private float unitsPerSecondSprint = 10;
-        private float unitsPerSecondJump = 0.15f;
-        private float gravity = -0.075f;
+        private float gravity = 0;
         public float BulletVelocity = 15f;
         
 
@@ -35,6 +34,8 @@ namespace CamTest
         public bool jumping = false;
         public bool crouching = false;
         public bool sprinting = false;
+
+        public Vector2 PositionXZ;
 
         /// <summary>
         /// this serves as the cameras up for fixed cameras this might not change at all ever.
@@ -138,7 +139,6 @@ namespace CamTest
 
         public void Update(GameTime gameTime)
         {
-            MouseState state = Mouse.GetState(gameWindow);
             KeyboardState kstate = Keyboard.GetState();
             // mouse controls
             RotateLeftOrRight(gameTime, -MouseMovement().X);         //mouse look left/right
@@ -146,8 +146,7 @@ namespace CamTest
             Mouse.SetPosition(400, 240);
 
             // movement controls
-            if (Position.Y > 2)
-                Position = new Vector3(Position.X, Position.Y + gravity, Position.Z); //gravity
+            Position = new Vector3(Position.X, Position.Y + gravity, Position.Z); //gravity
 
             if (Position.Y < 2)
                 Position = new Vector3(Position.X,2,Position.Z); //placeholder for collision on ground
@@ -156,15 +155,17 @@ namespace CamTest
             if (kstate.IsKeyDown(Keys.Space)== true && !jumping)
             {
                 jumping = true;
-                totalTime = 0;
+                gravity = 0.15f;
             }
-            if (jumping)
+            if (Position.Y > 2)
             {
-               totalTime++;
-                Position = new Vector3(Position.X, Position.Y + unitsPerSecondJump, Position.Z);
+                gravity = gravity - 0.005f;
             }
-            if (totalTime > 35 && jumping)
-               jumping = false;
+            else
+                jumping = false;
+
+
+
             //jump code end //needs fixing
 
             moving = false;
@@ -239,13 +240,13 @@ namespace CamTest
         {
             if (sprinting)
                 unitsPerSecond = unitsPerSecondSprint;
-            Position += (camerasWorld.Forward * unitsPerSecond) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            Position += (camerasWorld.Forward * unitsPerSecond) *(float)gameTime.ElapsedGameTime.TotalSeconds;
+
         }
         public void MoveBackward(GameTime gameTime)
         {
             if (sprinting)
                 unitsPerSecond = unitsPerSecondSprint;
-            float temp = Position.Y;
             Position += (camerasWorld.Backward * unitsPerSecond) * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
         public void MoveLeft(GameTime gameTime)
