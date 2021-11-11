@@ -123,10 +123,21 @@ namespace CamTest
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            
             if(targetCount <5)
             {
                 CreateNewTarget();
+                targetCount++;
             }
+            if (Keyboard.GetState().IsKeyDown(Keys.K))
+                {
+                foreach(Target target in targetList)
+                {
+                    target.IsVisible = false;
+                }
+                targetCount = 0;
+            }
+
 
             MouseState state = Mouse.GetState();
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
