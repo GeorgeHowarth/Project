@@ -129,12 +129,11 @@ namespace CamTest
                 CreateNewTarget();
                 targetCount++;
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.K))
-                {
+
+            if (Keyboard.GetState().IsKeyDown(Keys.K)) //reset targets
+            {
                 foreach(Target target in targetList)
-                {
                     target.IsVisible = false;
-                }
                 targetCount = 0;
             }
 
