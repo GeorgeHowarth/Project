@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace CamTest
+namespace CamTest //can double jump if jump while crouched - fix
 {
     public class Basic3dExampleCamera
     {
@@ -34,6 +34,8 @@ namespace CamTest
         public bool jumping = false;
         public bool crouching = false;
         public bool sprinting = false;
+        public bool forwardBack = false;
+        public bool leftRight = false;
 
         public Vector2 PositionXZ;
 
@@ -166,29 +168,34 @@ namespace CamTest
 
 
 
-            //jump code end //needs fixing
-
+            //jump code end
+            forwardBack = false;
+            leftRight = false;
             moving = false;
             if (kstate.IsKeyDown(Keys.W))   //forward
             {
+                forwardBack = true;
                 MoveForward(gameTime);
                 moving = true;
             }
             
             if (kstate.IsKeyDown(Keys.S) == true) //back 
             {
+                forwardBack = true;
                 MoveBackward(gameTime);
                 moving = true;
             }
             
             if (kstate.IsKeyDown(Keys.A) == true) //left
             {
+                leftRight = true;
                 MoveLeft(gameTime);
                 moving = true;
             }
             
             if (kstate.IsKeyDown(Keys.D) == true) //right 
             {
+                leftRight = true;
                 MoveRight(gameTime);
                 moving = true;
             }
@@ -240,26 +247,37 @@ namespace CamTest
         {
             if (sprinting)
                 unitsPerSecond = unitsPerSecondSprint;
-            Position += (camerasWorld.Forward * unitsPerSecond) *(float)gameTime.ElapsedGameTime.TotalSeconds;
-
+            if (leftRight)
+                Position += (camerasWorld.Forward * unitsPerSecond / 2) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            else
+                Position += (camerasWorld.Forward * unitsPerSecond) * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
         public void MoveBackward(GameTime gameTime)
         {
             if (sprinting)
                 unitsPerSecond = unitsPerSecondSprint;
-            Position += (camerasWorld.Backward * unitsPerSecond) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (leftRight)
+                Position += (camerasWorld.Backward * unitsPerSecond / 2) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            else
+                Position += (camerasWorld.Backward * unitsPerSecond) * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
         public void MoveLeft(GameTime gameTime)
         {
             if (sprinting)
-                unitsPerSecond = unitsPerSecondSprint;
-            Position += (camerasWorld.Left * unitsPerSecond) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                 unitsPerSecond = unitsPerSecondSprint;
+            if (forwardBack)
+                Position += (camerasWorld.Left * unitsPerSecond / 2) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            else
+                Position += (camerasWorld.Left * unitsPerSecond) * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
         public void MoveRight(GameTime gameTime)
         {
             if (sprinting)
                 unitsPerSecond = unitsPerSecondSprint;
-            Position += (camerasWorld.Right * unitsPerSecond) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (forwardBack)
+                Position += (camerasWorld.Right * unitsPerSecond / 2) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            else
+                Position += (camerasWorld.Right * unitsPerSecond) * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
 
         public void RotateLeftOrRight(GameTime gameTime, float amount) //mouse look left/right

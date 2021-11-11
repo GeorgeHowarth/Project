@@ -36,7 +36,9 @@ namespace CamTest
 
 
         List<Bullet> bulletList = new List<Bullet>();
-        Target[] Buttons = new Target[3];
+        Target[] Buttons = new Target[4];
+        List<Target> targetList = new List<Target>();
+        int targetCount = 5;
 
 
         public Game1()
@@ -69,11 +71,16 @@ namespace CamTest
             quitButton.model = Content.Load<Model>(@"quit");
             Buttons[2] = quitButton;
 
-            //Target room = new Target();
-            //room.IsVisible = true;
-            //room.Position = new Vector3(0, 0, 0);
-            //room.model = Content.Load<Model>(@"room");
-            //Buttons[3] = room;
+            Target room = new Target();
+            room.IsVisible = true;
+            room.Position = new Vector3(100, -25, 0);
+            room.model = Content.Load<Model>(@"cube");
+            Buttons[3] = room;
+
+            for(int i = 0; i<5; i++)
+            {
+                CreateNewTarget();
+            }
         }
 
         protected override void LoadContent()
@@ -116,6 +123,11 @@ namespace CamTest
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            if(targetCount <5)
+            {
+                CreateNewTarget();
+            }
+
             MouseState state = Mouse.GetState();
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
@@ -173,7 +185,7 @@ namespace CamTest
                 //start
                 if (bullet.bulletPosition.X > -1 && bullet.bulletPosition.X < 3 && bullet.bulletPosition.Y > 1 && bullet.bulletPosition.Y < 4 && bullet.Position.Z > -12 && bullet.Position.Z < -8 && bullet.IsVisible) //placeholder for collision
                 {
-                    cam.Position = new Vector3(100, 0, 100); // moves the player when "start" button hit
+                    cam.Position = new Vector3(100, 2, 0); // moves the player when "start" button hit
                     bullet.IsVisible = false;
                 }
                 //settings
@@ -213,6 +225,10 @@ namespace CamTest
             {
                 button.targetsWorld = Matrix.CreateWorld(Matrix.CreateTranslation(button.Position).Translation, button.targetsWorld.Forward, Vector3.Up);
             }
+            foreach (Target target in targetList)
+            {
+                target.targetsWorld = Matrix.CreateWorld(Matrix.CreateTranslation(target.Position).Translation, target.targetsWorld.Forward, Vector3.Up);
+            }
         }
 
         public void CreateNewBullet()
@@ -225,6 +241,14 @@ namespace CamTest
             newBullet.model = Content.Load<Model>(@"Sphere");
 
             bulletList.Add(newBullet);
+        }
+        public void CreateNewTarget()
+        {
+            Target temp = new Target();
+            temp.IsVisible = true;
+            temp.Position = new Vector3(rnd.Next(75, 125), rnd.Next(0, 10), rnd.Next(-25, 25));
+            temp.model = Content.Load<Model>(@"globe-sphere");
+            targetList.Add(temp);
         }
 
         /// <summary>
@@ -273,6 +297,21 @@ namespace CamTest
                     }
                     mesh.Draw();
                 }
+            }
+            foreach (Target target in targetList)
+            {
+                if (target.IsVisible)
+                    foreach (ModelMesh mesh in target.model.Meshes)
+                    {
+                        foreach (BasicEffect effect in mesh.Effects)
+                        {
+                            effect.EnableDefaultLighting();
+                            effect.World = target.targetsWorld;
+                            effect.View = cam.ViewMatrix;
+                            effect.Projection = cam.ProjectionMatrix;
+                        }
+                        mesh.Draw();
+                    }
             }
         }
 

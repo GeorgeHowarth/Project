@@ -94,7 +94,7 @@ namespace CamTest
             columns *= 1;
             Vector3 centerOffset = Vector3.Zero;
             if (centered)
-                centerOffset = new Vector3(-.5f, -.5f, 0f);
+                centerOffset = new Vector3(-.5f, -.5f, 0);
             width = rows;
             height = columns;
             int len = width * 4 + height * 4;
