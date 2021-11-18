@@ -22,8 +22,8 @@ namespace CamTest //can double jump if jump while crouched - fix
         
 
         public float FieldOfView = MathHelper.PiOver4;
-        public float ShortRender = -0.01f;
-        public float LongRender = 75f;        //render distance
+        public float ShortRender = 0.01f;
+        public float LongRender = 100f;        //render distance
 
         public int xValue = 400;
         public int yValue = 240;

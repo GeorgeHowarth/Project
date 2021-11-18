@@ -30,7 +30,7 @@ namespace CamTest
         int timeuntilnextbullet = 0;
         int uprecoil;
         Random rnd = new Random();
-
+        bool temp = true;
         private BasicEffect basicEffect; 
         //shooting
 
@@ -38,7 +38,7 @@ namespace CamTest
         List<Bullet> bulletList = new List<Bullet>();
         Target[] Buttons = new Target[4];
         List<Target> targetList = new List<Target>();
-        int targetCount = 5;
+        int targetCount = 0;
 
 
         public Game1()
@@ -72,15 +72,11 @@ namespace CamTest
             Buttons[2] = quitButton;
 
             Target room = new Target();
+            //placeholder for floor at actual game area
             room.IsVisible = true;
             room.Position = new Vector3(100, -25, 0);
             room.model = Content.Load<Model>(@"cube");
             Buttons[3] = room;
-
-            for(int i = 0; i<5; i++)
-            {
-                CreateNewTarget();
-            }
         }
 
         protected override void LoadContent()
@@ -123,27 +119,28 @@ namespace CamTest
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            
-            if(targetCount <5)
+            MouseState state = Mouse.GetState();
+            if (targetCount <5)
             {
                 CreateNewTarget();
                 targetCount++;
             }
-
             if (Keyboard.GetState().IsKeyDown(Keys.K)) //reset targets
             {
-                foreach(Target target in targetList)
-                    target.IsVisible = false;
+                targetList.Clear();
                 targetCount = 0;
+                temp = false;
             }
-
-
-            MouseState state = Mouse.GetState();
+            if (Keyboard.GetState().IsKeyDown(Keys.L)&& temp)
+            {
+                targetList.RemoveAt(0);
+                targetCount--;
+                temp = false;
+            }
+            if (Keyboard.GetState().IsKeyUp(Keys.L) && !temp)
+                temp = true;
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
-            //if (Keyboard.GetState().IsKeyDown(Keys.F12))
-            //    graphics.ToggleFullScreen();
 
             cam.Update(gameTime);
             beffect.View = cam.ViewMatrix;
@@ -189,7 +186,7 @@ namespace CamTest
             }
 
             UpdateObjects(gameTime);
-
+            // button "collision"
             foreach(Bullet bullet in bulletList)
             {
                 //start
@@ -210,6 +207,19 @@ namespace CamTest
                     Exit(); //closes game when quit button hit
                 }
             }
+            foreach(Bullet bullet in bulletList)
+            {
+                if(bullet.IsVisible)
+                foreach (Target target in targetList)
+                {
+                    if (target.IsVisible && Vector3.Distance(bullet.bulletPosition, target.targetPosition) < 2)  //checks if bullet is within a circle of radius 2 and if so removes the target and spawns a new one
+                    {
+                        target.IsVisible = false;
+                        bullet.IsVisible = false;
+                        targetCount--;
+                    }
+                }
+            }
         }
 
         public void UpdateObjects(GameTime gt) 
@@ -218,7 +228,7 @@ namespace CamTest
             {
                 if (bullet.shooting)
                 {
-                    if (bullet.bulletCount >= 20)
+                    if (bullet.bulletCount >= 55)
                         bullet.shooting = false;
 
                     bullet.bulletsWorld = Matrix.CreateTranslation(bullet.Position);
@@ -252,7 +262,7 @@ namespace CamTest
 
             bulletList.Add(newBullet);
         }
-        public void CreateNewTarget()
+        public void CreateNewTarget()           //creates a new target using the target class
         {
             Target temp = new Target();
             temp.IsVisible = true;
