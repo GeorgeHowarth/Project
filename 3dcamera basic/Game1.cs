@@ -19,7 +19,11 @@ namespace CamTest
         BasicEffect beffect;
         Basic3dExampleCamera cam;
         Matrix camWorldObjectToVisualize = Matrix.Identity;
-        
+        Texture2D SquareTexture;
+        Rectangle Square1 = new Rectangle(new Point(300, 240), new Point(3)); //change positions
+        Rectangle Square2 = new Rectangle(new Point(400, 260), new Point(3));
+        Rectangle Square3 = new Rectangle(new Point(300, 240), new Point(3));
+        Rectangle Square4 = new Rectangle(new Point(400, 260), new Point(3));
         Grid3dOrientation worldGrid = new Grid3dOrientation(20, 20, .01f);
         OrientationLines orientationLines = new OrientationLines(.2f, 1f);
 
@@ -39,7 +43,6 @@ namespace CamTest
         Target[] Buttons = new Target[4];
         List<Target> targetList = new List<Target>();
         int targetCount = 0;
-
 
         public Game1()
         {
@@ -103,7 +106,10 @@ namespace CamTest
             basicEffect.Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45f), GraphicsDevice.Viewport.AspectRatio, 1f, 1000f);
             IsMouseVisible = false;
 
-    }
+            spriteBatch = new SpriteBatch(GraphicsDevice);
+            SquareTexture = new Texture2D(GraphicsDevice, 1, 1);
+            SquareTexture.SetData(new Color[] { Color.White });
+        }
 
         protected override void UnloadContent()
         {
@@ -181,7 +187,7 @@ namespace CamTest
             if (!canshoot)
             {
                 timeuntilnextbullet++;
-                if (timeuntilnextbullet >= 5)  //firerate
+                if (timeuntilnextbullet >= 7.5f)  //firerate
                     canshoot = true;
             }
 
@@ -212,7 +218,7 @@ namespace CamTest
                 if(bullet.IsVisible)
                 foreach (Target target in targetList)
                 {
-                    if (target.IsVisible && Vector3.Distance(bullet.bulletPosition, target.targetPosition) < 2)  //checks if bullet is within a circle of radius 2 and if so removes the target and spawns a new one
+                    if (target.IsVisible && Vector3.Distance(bullet.bulletPosition, target.targetPosition) < 1.5f)  //checks if bullet is within a circle of radius 2 and if so removes the target and spawns a new one
                     {
                         target.IsVisible = false;
                         bullet.IsVisible = false;
@@ -286,9 +292,16 @@ namespace CamTest
             orientationLines.DrawWithBasicEffect(GraphicsDevice, beffect, Matrix.Identity);
             base.Draw(gameTime);
 
+            spriteBatch.Begin();
+            spriteBatch.Draw(SquareTexture, Square1, Color.White);
+            spriteBatch.Draw(SquareTexture, Square2, Color.White);
+            spriteBatch.Draw(SquareTexture, Square3, Color.White);
+            spriteBatch.Draw(SquareTexture, Square4, Color.White);
+            spriteBatch.End();
+
             //shooting
 
-            foreach(Target button in Buttons)
+            foreach (Target button in Buttons)
             {
                 if(button.IsVisible)
                 foreach (ModelMesh mesh in button.model.Meshes)
