@@ -20,10 +20,10 @@ namespace CamTest
         Basic3dExampleCamera cam;
         Matrix camWorldObjectToVisualize = Matrix.Identity;
         Texture2D SquareTexture;
-        Rectangle Square1 = new Rectangle(new Point(300, 240), new Point(3)); //change positions
-        Rectangle Square2 = new Rectangle(new Point(400, 260), new Point(3));
-        Rectangle Square3 = new Rectangle(new Point(300, 240), new Point(3));
-        Rectangle Square4 = new Rectangle(new Point(400, 260), new Point(3));
+        Rectangle Square1 = new Rectangle(new Point(398, 242), new Point(2)); //change positions
+        Rectangle Square2 = new Rectangle(new Point(401, 245), new Point(2));
+        Rectangle Square3 = new Rectangle(new Point(401, 240), new Point(2));
+        Rectangle Square4 = new Rectangle(new Point(404, 242), new Point(2));
         Grid3dOrientation worldGrid = new Grid3dOrientation(20, 20, .01f);
         OrientationLines orientationLines = new OrientationLines(.2f, 1f);
 
@@ -90,6 +90,10 @@ namespace CamTest
             cam.Position = new Vector3(0, 1, 10);
             cam.Target = Vector3.Zero;
 
+            spriteBatch = new SpriteBatch(GraphicsDevice);
+            SquareTexture = new Texture2D(GraphicsDevice, 1, 1);
+            SquareTexture.SetData(new Color[] { Color.White });
+
             textureForward = CreateCheckerBoard(GraphicsDevice, 20, 20, Color.Red, Color.Red);      // creates red X CheckerBoard
             textureRight = CreateCheckerBoard(GraphicsDevice, 20, 20, Color.Yellow, Color.Yellow);  // creates yellow Y CheckerBoard
             textureUp = CreateCheckerBoard(GraphicsDevice, 20, 20, Color.Blue, Color.Blue);         // creates blue Z CheckerBoard
@@ -106,9 +110,6 @@ namespace CamTest
             basicEffect.Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45f), GraphicsDevice.Viewport.AspectRatio, 1f, 1000f);
             IsMouseVisible = false;
 
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-            SquareTexture = new Texture2D(GraphicsDevice, 1, 1);
-            SquareTexture.SetData(new Color[] { Color.White });
         }
 
         protected override void UnloadContent()
@@ -292,13 +293,6 @@ namespace CamTest
             orientationLines.DrawWithBasicEffect(GraphicsDevice, beffect, Matrix.Identity);
             base.Draw(gameTime);
 
-            spriteBatch.Begin();
-            spriteBatch.Draw(SquareTexture, Square1, Color.White);
-            spriteBatch.Draw(SquareTexture, Square2, Color.White);
-            spriteBatch.Draw(SquareTexture, Square3, Color.White);
-            spriteBatch.Draw(SquareTexture, Square4, Color.White);
-            spriteBatch.End();
-
             //shooting
 
             foreach (Target button in Buttons)
@@ -316,21 +310,7 @@ namespace CamTest
                     mesh.Draw();
                 }
             }
-            foreach (Bullet bullet in bulletList)
-            {
-                if (bullet.IsVisible)
-                foreach (ModelMesh mesh in bullet.model.Meshes)
-                {
-                    foreach (BasicEffect effect in mesh.Effects)
-                    {
-                        effect.EnableDefaultLighting();
-                        effect.World = bullet.bulletsWorld;
-                        effect.View = cam.ViewMatrix;
-                        effect.Projection = cam.ProjectionMatrix;
-                    }
-                    mesh.Draw();
-                }
-            }
+
             foreach (Target target in targetList)
             {
                 if (target.IsVisible)
@@ -346,6 +326,28 @@ namespace CamTest
                         mesh.Draw();
                     }
             }
+
+            foreach (Bullet bullet in bulletList)
+            {
+                if (bullet.IsVisible)
+                    foreach (ModelMesh mesh in bullet.model.Meshes)
+                    {
+                        foreach (BasicEffect effect in mesh.Effects)
+                        {
+                            effect.EnableDefaultLighting();
+                            effect.World = bullet.bulletsWorld;
+                            effect.View = cam.ViewMatrix;
+                            effect.Projection = cam.ProjectionMatrix;
+                        }
+                        mesh.Draw();
+                    }
+            }
+            spriteBatch.Begin();
+            spriteBatch.Draw(SquareTexture, Square1, Color.White);
+            spriteBatch.Draw(SquareTexture, Square2, Color.White);
+            spriteBatch.Draw(SquareTexture, Square3, Color.White);
+            spriteBatch.Draw(SquareTexture, Square4, Color.White);
+            spriteBatch.End();
         }
 
         //creates the checkerboard pattern
