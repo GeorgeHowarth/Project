@@ -55,21 +55,18 @@ namespace CamTest
             base.Initialize();
             Target startButton = new Target();
             //creates the start button
-            startButton.IsVisible = true;
             startButton.Position = new Vector3(0,3,-10);
             startButton.model = Content.Load<Model>(@"start");
             Buttons[0] = startButton;
 
             Target settingsButton = new Target();
             //creates the settings button
-            settingsButton.IsVisible = true;
             settingsButton.Position = new Vector3(-10, 3, -10);
             settingsButton.model = Content.Load<Model>(@"settings");
             Buttons[1] = settingsButton;
 
             Target quitButton = new Target();
             //creates the quit button
-            quitButton.IsVisible = true;
             quitButton.Position = new Vector3(10, 3, -10);
             quitButton.model = Content.Load<Model>(@"quit");
             Buttons[2] = quitButton;
@@ -90,7 +87,6 @@ namespace CamTest
             cam.Position = new Vector3(0, 1, 10);
             cam.Target = Vector3.Zero;
 
-            spriteBatch = new SpriteBatch(GraphicsDevice);
             SquareTexture = new Texture2D(GraphicsDevice, 1, 1);
             SquareTexture.SetData(new Color[] { Color.White });
 
@@ -147,7 +143,7 @@ namespace CamTest
             if (Keyboard.GetState().IsKeyUp(Keys.L) && !temp)
                 temp = true;
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
+                cam.Position = new Vector3(0, 2, 10);
 
             cam.Update(gameTime);
             beffect.View = cam.ViewMatrix;
@@ -162,7 +158,7 @@ namespace CamTest
                 canshoot = false;             //controls the fire rate
                 timeuntilnextbullet = 0;
                 //start recoil code
-                double random = rnd.Next(-2, 2);
+                double random = rnd.Next(-2, 5);
                 uprecoil = -2;
                 if(cam.moving) // if moving, recoil is increased
                 {
@@ -262,9 +258,7 @@ namespace CamTest
         {
             Bullet newBullet = new Bullet();                         //creates a new bullet using the bullet class
             newBullet.Position = cam.Position;
-            newBullet.shooting = true;
             newBullet.Direction = cam.camerasWorld.Forward;
-            newBullet.IsVisible = true;
             newBullet.model = Content.Load<Model>(@"Sphere");
 
             bulletList.Add(newBullet);
@@ -272,7 +266,6 @@ namespace CamTest
         public void CreateNewTarget()           //creates a new target using the target class
         {
             Target temp = new Target();
-            temp.IsVisible = true;
             temp.Position = new Vector3(rnd.Next(75, 125), rnd.Next(0, 10), rnd.Next(-25, 25));
             temp.model = Content.Load<Model>(@"globe-sphere");
             targetList.Add(temp);

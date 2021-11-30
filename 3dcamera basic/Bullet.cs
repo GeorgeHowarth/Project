@@ -14,8 +14,8 @@ namespace CamTest
         public Vector3 Direction;
         public float Velocity = 175f;
         public Vector3 Position;
-        public bool IsVisible;
-        public bool shooting;
+        public bool IsVisible = true;
+        public bool shooting = true;
         public Model model;
         public Matrix bulletsWorld = Matrix.Identity;
         public Vector3 Up = Vector3.Up;
