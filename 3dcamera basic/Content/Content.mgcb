@@ -22,7 +22,7 @@
 #begin globe-sphere.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
-/processorParam:ColorKeyColor=0,0,0,0
+/processorParam:ColorKeyColor=255,8,8,0
 /processorParam:ColorKeyEnabled=True
 /processorParam:DefaultEffect=BasicEffect
 /processorParam:GenerateMipmaps=True
@@ -33,10 +33,10 @@
 /processorParam:RotationX=0
 /processorParam:RotationY=0
 /processorParam:RotationZ=0
-/processorParam:Scale=0.1
+/processorParam:Scale=2.5
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:globe-sphere.fbx;sphere.fbx
+/build:globe-sphere.fbx
 
 #begin quit.fbx
 /importer:FbxImporter
@@ -56,6 +56,13 @@
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
 /build:quit.fbx
+
+#begin sample.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:sample.spritefont
 
 #begin settings.fbx
 /importer:FbxImporter
