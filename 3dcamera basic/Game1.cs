@@ -14,6 +14,10 @@ namespace CamTest
 {
     public class Game1 : Game
     {
+        float TargetsHit = 0;
+        float ShotsFired = 1;
+        float Accuracy;
+        SpriteFont spriteFont;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         BasicEffect beffect;
@@ -77,6 +81,8 @@ namespace CamTest
             room.Position = new Vector3(100, -25, 0);
             room.model = Content.Load<Model>(@"cube");
             Buttons[3] = room;
+
+            spriteFont = Content.Load<SpriteFont>(@"sample");
         }
 
         protected override void LoadContent()
@@ -179,7 +185,9 @@ namespace CamTest
                 int leftorright = Convert.ToInt32(Math.Round(random));
                 cam.RotateUpOrDown(gameTime, uprecoil);       //upwards recoil is 5 when standing
                 cam.RotateLeftOrRight(gameTime, leftorright);     //right recoil is random between 2 to the left and 2 to the right but changed based on movement
-                //end recoil code
+                 //end recoil code
+                ShotsFired = ShotsFired + 1;
+                Accuracy = UpdateAccuracy(ShotsFired, TargetsHit);
             }
             if (!canshoot)
             {
@@ -197,6 +205,9 @@ namespace CamTest
                 {
                     cam.Position = new Vector3(100, 2, 0); // moves the player when "start" button hit
                     bullet.IsVisible = false;
+                    TargetsHit = 1;
+                    ShotsFired = 1;
+                    Accuracy = UpdateAccuracy(ShotsFired, TargetsHit);
                 }
                 //settings
                 if (bullet.bulletPosition.X > -11 && bullet.bulletPosition.X < -7 && bullet.bulletPosition.Y > 1 && bullet.bulletPosition.Y < 4 && bullet.Position.Z > -12 && bullet.Position.Z < -8 && bullet.IsVisible) //placeholder for collision
@@ -220,7 +231,9 @@ namespace CamTest
                         target.IsVisible = false;
                         bullet.IsVisible = false;
                         targetCount--;
-                    }
+                        TargetsHit = TargetsHit + 1;
+                        Accuracy = UpdateAccuracy(ShotsFired, TargetsHit);
+                        }
                 }
             }
         }
@@ -256,6 +269,7 @@ namespace CamTest
 
         public void CreateNewBullet()
         {
+            //ShotsFired++;
             Bullet newBullet = new Bullet();                         //creates a new bullet using the bullet class
             newBullet.Position = cam.Position;
             newBullet.Direction = cam.camerasWorld.Forward;
@@ -269,6 +283,11 @@ namespace CamTest
             temp.Position = new Vector3(rnd.Next(75, 125), rnd.Next(0, 10), rnd.Next(-25, 25));
             temp.model = Content.Load<Model>(@"globe-sphere");
             targetList.Add(temp);
+        }
+
+        public int UpdateAccuracy(float ShotsFired,float TargetsHit)
+        {
+            return (int)((TargetsHit / ShotsFired) * 100);
         }
 
         /// <summary>
@@ -340,7 +359,11 @@ namespace CamTest
             spriteBatch.Draw(SquareTexture, Square2, Color.White);
             spriteBatch.Draw(SquareTexture, Square3, Color.White);
             spriteBatch.Draw(SquareTexture, Square4, Color.White);
+            spriteBatch.DrawString(spriteFont, "Accuracy: " + Accuracy + "% ", new Vector2(5, 50), Color.White);
             spriteBatch.End();
+
+            
+
         }
 
         //creates the checkerboard pattern
