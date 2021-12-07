@@ -358,11 +358,11 @@ namespace CamTest
             spriteBatch.Draw(SquareTexture, Square2, Color.White);
             spriteBatch.Draw(SquareTexture, Square3, Color.White);
             spriteBatch.Draw(SquareTexture, Square4, Color.White);
-            spriteBatch.DrawString(spriteFont, "Accuracy: " + Accuracy + "% ", new Vector2(5, 50), Color.White);
-            spriteBatch.DrawString(spriteFont, "Targets Hit: " + TargetsHit, new Vector2(5, 90), Color.White);
-            spriteBatch.DrawString(spriteFont, "Shots Fired: " + ShotsFired, new Vector2(5, 130), Color.White);
-            spriteBatch.DrawString(spriteFont, ""+cam.Position, new Vector2(5, 170), Color.White);
-            spriteBatch.DrawString(spriteFont, "Dash Ready? " + cam.dashReady, new Vector2(5, 210), Color.White);
+            spriteBatch.DrawString(spriteFont, "Accuracy: " + Accuracy + "% ", new Vector2(5, 10), Color.White);
+            spriteBatch.DrawString(spriteFont, "Targets Hit: " + TargetsHit, new Vector2(5, 30), Color.White);
+            spriteBatch.DrawString(spriteFont, "Shots Fired: " + ShotsFired, new Vector2(5, 50), Color.White);
+            spriteBatch.DrawString(spriteFont, ""+cam.Position, new Vector2(5, 70), Color.White);
+            spriteBatch.DrawString(spriteFont, "Dash Ready? " + cam.dashReady, new Vector2(5, 90), Color.White);
             spriteBatch.End();
         }
 
