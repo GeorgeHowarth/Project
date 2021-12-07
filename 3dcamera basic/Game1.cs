@@ -15,7 +15,7 @@ namespace CamTest
     public class Game1 : Game
     {
         float TargetsHit = 0;
-        float ShotsFired = 1;
+        float ShotsFired = 0;
         float Accuracy;
         SpriteFont spriteFont;
         GraphicsDeviceManager graphics;
@@ -205,9 +205,8 @@ namespace CamTest
                 {
                     cam.Position = new Vector3(100, 2, 0); // moves the player when "start" button hit
                     bullet.IsVisible = false;
-                    TargetsHit = 1;
-                    ShotsFired = 1;
-                    Accuracy = UpdateAccuracy(ShotsFired, TargetsHit);
+                    TargetsHit = 0;
+                    ShotsFired = 0;
                 }
                 //settings
                 if (bullet.bulletPosition.X > -11 && bullet.bulletPosition.X < -7 && bullet.bulletPosition.Y > 1 && bullet.bulletPosition.Y < 4 && bullet.Position.Z > -12 && bullet.Position.Z < -8 && bullet.IsVisible) //placeholder for collision
@@ -233,7 +232,7 @@ namespace CamTest
                         targetCount--;
                         TargetsHit = TargetsHit + 1;
                         Accuracy = UpdateAccuracy(ShotsFired, TargetsHit);
-                        }
+                    }
                 }
             }
         }
@@ -360,10 +359,11 @@ namespace CamTest
             spriteBatch.Draw(SquareTexture, Square3, Color.White);
             spriteBatch.Draw(SquareTexture, Square4, Color.White);
             spriteBatch.DrawString(spriteFont, "Accuracy: " + Accuracy + "% ", new Vector2(5, 50), Color.White);
+            spriteBatch.DrawString(spriteFont, "Targets Hit: " + TargetsHit, new Vector2(5, 90), Color.White);
+            spriteBatch.DrawString(spriteFont, "Shots Fired: " + ShotsFired, new Vector2(5, 130), Color.White);
+            spriteBatch.DrawString(spriteFont, ""+cam.Position, new Vector2(5, 170), Color.White);
+            spriteBatch.DrawString(spriteFont, "Dash Ready? " + cam.dashReady, new Vector2(5, 210), Color.White);
             spriteBatch.End();
-
-            
-
         }
 
         //creates the checkerboard pattern

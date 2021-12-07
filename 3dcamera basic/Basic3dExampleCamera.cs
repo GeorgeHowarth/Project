@@ -19,6 +19,8 @@ namespace CamTest //can double jump if jump while crouched - fix
         private float unitsPerSecondSprint = 10;
         private float gravity = 0;
         public float BulletVelocity = 15f;
+        public int dashCooldown = 300;
+        public bool dashReady = true;
         
 
         public float FieldOfView = MathHelper.PiOver4;
@@ -227,6 +229,21 @@ namespace CamTest //can double jump if jump while crouched - fix
                     unitsPerSecond = 5;                                     //normal run speed = 5
                 }
             }
+            if(dashCooldown > 300)
+            {
+                dashReady = true;
+                if(kstate.IsKeyDown(Keys.Q)== true)
+                {
+                    dashCooldown = 0;
+                    dashReady = false;
+                }
+            }
+            else
+            {
+                dashCooldown++;
+            }
+            if(dashCooldown < 15)
+                Position += (camerasWorld.Forward * 150) * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
         public Vector2 MouseMovement()               //mouse is set to x400 y240 every update, this tracks how far from these coordinates it is
         {
