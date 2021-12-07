@@ -158,11 +158,11 @@ namespace CamTest //can double jump if jump while crouched - fix
             //jump code start
             if (kstate.IsKeyDown(Keys.Space)== true && !jumping)
             {
-                jumping = true;
                 gravity = 0.15f;
             }
             if (Position.Y > 2)
             {
+                jumping = true;
                 gravity = gravity - 0.005f;
             }
             else
