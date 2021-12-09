@@ -14,39 +14,40 @@ namespace CamTest
 {
     public class Game1 : Game
     {
-        float TargetsHit = 0;
-        float ShotsFired = 0;
-        float Accuracy;
-        SpriteFont spriteFont;
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
-        BasicEffect beffect;
-        Basic3dExampleCamera cam;
-        Matrix camWorldObjectToVisualize = Matrix.Identity;
-        Texture2D SquareTexture;
-        Rectangle Square1 = new Rectangle(new Point(398, 242), new Point(2)); //change positions
-        Rectangle Square2 = new Rectangle(new Point(401, 245), new Point(2));
-        Rectangle Square3 = new Rectangle(new Point(401, 240), new Point(2));
-        Rectangle Square4 = new Rectangle(new Point(404, 242), new Point(2));
-        Grid3dOrientation worldGrid = new Grid3dOrientation(20, 20, .01f);
-        OrientationLines orientationLines = new OrientationLines(.2f, 1f);
-
-        Texture2D textureForward;
-        Texture2D textureRight;
-        Texture2D textureUp;
-        bool canshoot = true;
-        int timeuntilnextbullet = 0;
-        int uprecoil;
-        Random rnd = new Random();
-        bool temp = true;
-        private BasicEffect basicEffect; 
+        private float TargetsHit = 0;
+        private float ShotsFired = 0;
+        private float Accuracy;
+        private SpriteFont spriteFont;
+        private readonly GraphicsDeviceManager graphics;
+        private SpriteBatch spriteBatch;
+        private BasicEffect beffect;
+        private Basic3dExampleCamera cam;
+        private Matrix camWorldObjectToVisualize = Matrix.Identity;
+        private Texture2D SquareTexture;
+        private Rectangle Square1 = new Rectangle(new Point(398, 242), new Point(2)); //change positions
+        private Rectangle Square2 = new Rectangle(new Point(401, 245), new Point(2));
+        private Rectangle Square3 = new Rectangle(new Point(401, 240), new Point(2));
+        private Rectangle Square4 = new Rectangle(new Point(404, 242), new Point(2));
+        private readonly Grid3dOrientation worldGrid = new Grid3dOrientation(20, 20, .01f);
+        private readonly OrientationLines orientationLines = new OrientationLines(.2f, 1f);
+        private Texture2D textureForward;
+        private Texture2D textureRight;
+        private Texture2D textureUp;
+        private bool canshoot = true;
+        private int timeuntilnextbullet = 0;
+        private int uprecoil;
+        private readonly Random rnd = new Random();
+        private bool temp = true;
+        private BasicEffect basicEffect;
+        private int score = 0;
+        private int averagetime = 0;
         //shooting
 
 
-        List<Bullet> bulletList = new List<Bullet>();
-        Target[] Buttons = new Target[4];
-        List<Target> targetList = new List<Target>();
-        int targetCount = 0;
+        private readonly List<Bullet> bulletList = new List<Bullet>();
+        private readonly Target[] Buttons = new Target[4];
+        private readonly List<Target> targetList = new List<Target>();
+        private int targetCount = 0;
 
         public Game1()
         {
@@ -57,6 +58,7 @@ namespace CamTest
         protected override void Initialize()
         {
             base.Initialize();
+
             Target startButton = new Target();
             //creates the start button
             startButton.Position = new Vector3(0,3,-10);
@@ -89,7 +91,7 @@ namespace CamTest
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             beffect = new BasicEffect(GraphicsDevice);
-            cam = new Basic3dExampleCamera(GraphicsDevice, Window);
+            cam = new Basic3dExampleCamera(GraphicsDevice);
             cam.Position = new Vector3(0, 1, 10);
             cam.Target = Vector3.Zero;
 
@@ -104,8 +106,6 @@ namespace CamTest
             beffect.TextureEnabled = true;
             beffect.World = Matrix.Identity;
             beffect.Projection = cam.ProjectionMatrix;
-
-            //crosshair = Content.Load<Texture2D>(@"crosshair");
 
             basicEffect = new BasicEffect(GraphicsDevice);
             basicEffect.View = Matrix.CreateLookAt(new Vector3(50, 50, 50), new Vector3(0, 0, 0), Vector3.Up);
@@ -168,17 +168,17 @@ namespace CamTest
                 uprecoil = -2;
                 if(cam.moving) // if moving, recoil is increased
                 {
-                    random = random * 2;
+                    random *= 2;
                     uprecoil = -6;
                 }
                 if (cam.crouching)    //if crouching recoil is reduced
                 {
-                    random = random / 2;
+                    random /= 2;
                     uprecoil = -1;
                 }
                 else if (cam.jumping)  //if jumping recoil is massively increased
                 {
-                    random = random * 3;
+                    random *= 3;
                     uprecoil = -10;
                 }
 
@@ -186,7 +186,7 @@ namespace CamTest
                 cam.RotateUpOrDown(gameTime, uprecoil);       //upwards recoil is 5 when standing
                 cam.RotateLeftOrRight(gameTime, leftorright);     //right recoil is random between 2 to the left and 2 to the right but changed based on movement
                  //end recoil code
-                ShotsFired = ShotsFired + 1;
+                ShotsFired++;
                 Accuracy = UpdateAccuracy(ShotsFired, TargetsHit);
             }
             if (!canshoot)
@@ -230,8 +230,9 @@ namespace CamTest
                         target.IsVisible = false;
                         bullet.IsVisible = false;
                         targetCount--;
-                        TargetsHit = TargetsHit + 1;
+                        TargetsHit++;
                         Accuracy = UpdateAccuracy(ShotsFired, TargetsHit);
+                        score += 100 * (Math.Abs(target.leftright) + Math.Abs(target.backforward) / 2);
                     }
                 }
             }
@@ -254,6 +255,28 @@ namespace CamTest
                 else
                 {
                     bullet.IsVisible = false;
+                }
+            }
+            foreach (Target target in targetList)               //this piece of code handles how each target moves
+            {
+                if (target.IsVisible)
+                {
+                    target.targetsWorld = Matrix.CreateTranslation(target.Position);
+                    target.targetsWorld = Matrix.CreateWorld(target.targetsWorld.Translation, target.targetsWorld.Forward, Vector3.Up);
+                    if (target.Counter < 120)
+                    {
+                        target.Position += (new Vector3(target.leftright,0,target.backforward)* 1.5f) * (float)gt.ElapsedGameTime.TotalSeconds;
+                        target.Counter++;
+                    }
+                    else if (target.Counter < 240)
+                    {
+                        target.Position += (new Vector3(target.leftright,0,target.backforward) * -1.5f) * (float)gt.ElapsedGameTime.TotalSeconds;
+                        target.Counter++;
+                    }
+                    else if (target.Counter >= 240)
+                    {
+                        target.Counter = 0;
+                    }
                 }
             }
             foreach (Target button in Buttons)
@@ -281,12 +304,19 @@ namespace CamTest
             Target temp = new Target();
             temp.Position = new Vector3(rnd.Next(75, 125), rnd.Next(0, 10), rnd.Next(-25, 25));
             temp.model = Content.Load<Model>(@"globe-sphere");
+            temp.leftright = rnd.Next(-10, 10);
+            temp.backforward = rnd.Next(-10, 10);
             targetList.Add(temp);
         }
 
         public int UpdateAccuracy(float ShotsFired,float TargetsHit)
         {
             return (int)((TargetsHit / ShotsFired) * 100);
+        }
+
+        public int UpdateAverageTime(int averagetime, int temptime)
+        {
+            return (averagetime + temptime / 60) / 2;
         }
 
         /// <summary>
@@ -353,16 +383,17 @@ namespace CamTest
                         mesh.Draw();
                     }
             }
-            spriteBatch.Begin();
-            spriteBatch.Draw(SquareTexture, Square1, Color.White);
-            spriteBatch.Draw(SquareTexture, Square2, Color.White);
-            spriteBatch.Draw(SquareTexture, Square3, Color.White);
-            spriteBatch.Draw(SquareTexture, Square4, Color.White);
+            spriteBatch.Begin(); //hud
+            spriteBatch.Draw(SquareTexture, Square1, Color.White);  //crosshair
+            spriteBatch.Draw(SquareTexture, Square2, Color.White);//crosshair
+            spriteBatch.Draw(SquareTexture, Square3, Color.White);//crosshair
+            spriteBatch.Draw(SquareTexture, Square4, Color.White);//crosshair
             spriteBatch.DrawString(spriteFont, "Accuracy: " + Accuracy + "% ", new Vector2(5, 10), Color.White);
             spriteBatch.DrawString(spriteFont, "Targets Hit: " + TargetsHit, new Vector2(5, 30), Color.White);
             spriteBatch.DrawString(spriteFont, "Shots Fired: " + ShotsFired, new Vector2(5, 50), Color.White);
             spriteBatch.DrawString(spriteFont, ""+cam.Position, new Vector2(5, 70), Color.White);
             spriteBatch.DrawString(spriteFont, "Dash Ready? " + cam.dashReady, new Vector2(5, 90), Color.White);
+            spriteBatch.DrawString(spriteFont, "" + score, new Vector2(5, 110), Color.White);
             spriteBatch.End();
         }
 

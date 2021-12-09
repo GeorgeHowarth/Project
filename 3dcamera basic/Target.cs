@@ -19,6 +19,8 @@ namespace CamTest
         public Matrix targetsWorld = Matrix.Identity;
         public Vector3 Up = Vector3.Up;
         public int Counter;
+        public int leftright;
+        public int backforward;
 
         public Vector3 targetPosition
         {

@@ -11,35 +11,24 @@ namespace CamTest //can double jump if jump while crouched - fix
 {
     public class Basic3dExampleCamera
     {
-        private GraphicsDevice graphicsDevice = null;
-        private GameWindow gameWindow = null;
+        private readonly GraphicsDevice graphicsDevice = null;
         public float sensitivity = 20f;
         bool invertControls = false;
         private float unitsPerSecond = 5;
-        private float unitsPerSecondSprint = 10;
+        private readonly float unitsPerSecondSprint = 10;
         private float gravity = 0;
         public float BulletVelocity = 15f;
         public int dashCooldown = 300;
         public bool dashReady = true;
-        
-
-        public float FieldOfView = MathHelper.PiOver4;
-        public float ShortRender = 0.01f;
-        public float LongRender = 100f;        //render distance
-
-        public int xValue = 400;
-        public int yValue = 240;
-
-        public double totalTime = 0;
-
+        private readonly float FieldOfView = MathHelper.PiOver4;
+        private readonly float ShortRender = 0.01f;
+        private readonly float LongRender = 100f;        //render distance
         public bool moving = false;
         public bool jumping = false;
         public bool crouching = false;
         public bool sprinting = false;
-        public bool forwardBack = false;
-        public bool leftRight = false;
-
-        public Vector2 PositionXZ;
+        private bool forwardBack = false;
+        private bool leftRight = false;
 
         /// <summary>
         /// this serves as the cameras up for fixed cameras this might not change at all ever.
@@ -60,10 +49,9 @@ namespace CamTest //can double jump if jump while crouched - fix
         /// <summary>
         /// Constructs the camera.
         /// </summary>
-        public Basic3dExampleCamera(GraphicsDevice gfxDevice, GameWindow window)
+        public Basic3dExampleCamera(GraphicsDevice gfxDevice)
         {
             graphicsDevice = gfxDevice;
-            gameWindow = window;
             ReCreateWorldAndView();
         }
         /// <summary>
