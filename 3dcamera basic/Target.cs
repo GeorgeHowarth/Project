@@ -32,4 +32,4 @@ namespace CamTest
             get { return targetsWorld.Translation; }
         }
     }
-}
+}   

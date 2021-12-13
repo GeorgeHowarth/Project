@@ -12,7 +12,7 @@ namespace CamTest
     public class Bullet 
     {
         public Vector3 Direction;
-        public float Velocity = 175f;
+        public float Velocity = 250f;
         public Vector3 Position;
         public bool IsVisible = true;
         public bool shooting = true;

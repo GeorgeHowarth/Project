@@ -17,17 +17,20 @@ namespace CamTest
         private float TargetsHit = 0;
         private float ShotsFired = 0;
         private float Accuracy;
-        private SpriteFont spriteFont;
+        private SpriteFont spriteFont16;
+        private SpriteFont spriteFont50;
         private readonly GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
         private BasicEffect beffect;
         private Basic3dExampleCamera cam;
         private Matrix camWorldObjectToVisualize = Matrix.Identity;
         private Texture2D SquareTexture;
-        private Rectangle Square1 = new Rectangle(new Point(398, 242), new Point(2)); //change positions
-        private Rectangle Square2 = new Rectangle(new Point(401, 245), new Point(2));
-        private Rectangle Square3 = new Rectangle(new Point(401, 240), new Point(2));
-        private Rectangle Square4 = new Rectangle(new Point(404, 242), new Point(2));
+        private Texture2D FinalSquareTexture;
+        private Rectangle Square1 = new Rectangle(new Point(398, 242), new Point(2)); //crosshair
+        private Rectangle Square2 = new Rectangle(new Point(401, 245), new Point(2)); //crosshair
+        private Rectangle Square3 = new Rectangle(new Point(401, 240), new Point(2)); //crosshair
+        private Rectangle Square4 = new Rectangle(new Point(404, 242), new Point(2)); //crosshair
+        private Rectangle FinalSquare = new Rectangle(new Point(0, 0), new Point(5000000));
         private readonly Grid3dOrientation worldGrid = new Grid3dOrientation(20, 20, .01f);
         private readonly OrientationLines orientationLines = new OrientationLines(.2f, 1f);
         private Texture2D textureForward;
@@ -40,7 +43,10 @@ namespace CamTest
         private bool temp = true;
         private BasicEffect basicEffect;
         private int score = 0;
-        private int averagetime = 0;
+        private double averagetime = 0;
+        private int totaltime;
+        private bool GameOver = false;
+        private int finalScore;
         //shooting
 
 
@@ -84,7 +90,8 @@ namespace CamTest
             room.model = Content.Load<Model>(@"cube");
             Buttons[3] = room;
 
-            spriteFont = Content.Load<SpriteFont>(@"sample");
+            spriteFont16 = Content.Load<SpriteFont>(@"16");
+            spriteFont50 = Content.Load<SpriteFont>(@"50");
         }
 
         protected override void LoadContent()
@@ -97,6 +104,8 @@ namespace CamTest
 
             SquareTexture = new Texture2D(GraphicsDevice, 1, 1);
             SquareTexture.SetData(new Color[] { Color.White });
+            FinalSquareTexture = new Texture2D(GraphicsDevice, 1, 1);
+            FinalSquareTexture.SetData(new Color[] { Color.Black });
 
             textureForward = CreateCheckerBoard(GraphicsDevice, 20, 20, Color.Red, Color.Red);      // creates red X CheckerBoard
             textureRight = CreateCheckerBoard(GraphicsDevice, 20, 20, Color.Yellow, Color.Yellow);  // creates yellow Y CheckerBoard
@@ -128,8 +137,18 @@ namespace CamTest
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            if(Keyboard.GetState().IsKeyDown(Keys.M) && temp)
+            {
+                GameOver = !GameOver;
+                finalScore = Convert.ToInt32(score * (Accuracy / 100) * (averagetime / 5));
+                temp = false;
+            }
+            if (Keyboard.GetState().IsKeyUp(Keys.M) && !temp)
+                temp = true;
+
+            totaltime++;
             MouseState state = Mouse.GetState();
-            if (targetCount <5)
+            if (targetCount < 5)
             {
                 CreateNewTarget();
                 targetCount++;
@@ -140,17 +159,17 @@ namespace CamTest
                 targetCount = 0;
                 temp = false;
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.L)&& temp)
+            if (Keyboard.GetState().IsKeyDown(Keys.L) && temp)
             {
                 targetList.RemoveAt(0);
                 targetCount--;
                 temp = false;
             }
-            if (Keyboard.GetState().IsKeyUp(Keys.L) && !temp)
-                temp = true;
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            //if (Keyboard.GetState().IsKeyUp(Keys.L) && !temp)
+            //    temp = true;
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 cam.Position = new Vector3(0, 2, 10);
-
+            
             cam.Update(gameTime);
             beffect.View = cam.ViewMatrix;
 
@@ -166,7 +185,7 @@ namespace CamTest
                 //start recoil code
                 double random = rnd.Next(-2, 5);
                 uprecoil = -2;
-                if(cam.moving) // if moving, recoil is increased
+                if (cam.moving) // if moving, recoil is increased
                 {
                     random *= 2;
                     uprecoil = -6;
@@ -185,9 +204,9 @@ namespace CamTest
                 int leftorright = Convert.ToInt32(Math.Round(random));
                 cam.RotateUpOrDown(gameTime, uprecoil);       //upwards recoil is 5 when standing
                 cam.RotateLeftOrRight(gameTime, leftorright);     //right recoil is random between 2 to the left and 2 to the right but changed based on movement
-                 //end recoil code
-                ShotsFired++;
-                Accuracy = UpdateAccuracy(ShotsFired, TargetsHit);
+                                                                      //end recoil code
+               ShotsFired++;
+               Accuracy = UpdateAccuracy(ShotsFired, TargetsHit);
             }
             if (!canshoot)
             {
@@ -198,15 +217,16 @@ namespace CamTest
 
             UpdateObjects(gameTime);
             // button "collision"
-            foreach(Bullet bullet in bulletList)
+            foreach (Bullet bullet in bulletList)
             {
                 //start
                 if (bullet.bulletPosition.X > -1 && bullet.bulletPosition.X < 3 && bullet.bulletPosition.Y > 1 && bullet.bulletPosition.Y < 4 && bullet.Position.Z > -12 && bullet.Position.Z < -8 && bullet.IsVisible) //placeholder for collision
                 {
-                    cam.Position = new Vector3(100, 2, 0); // moves the player when "start" button hit
+                    cam.Position = new Vector3(100, 2, 0); // starts the game
                     bullet.IsVisible = false;
                     TargetsHit = 0;
                     ShotsFired = 0;
+                    totaltime = 0;
                 }
                 //settings
                 if (bullet.bulletPosition.X > -11 && bullet.bulletPosition.X < -7 && bullet.bulletPosition.Y > 1 && bullet.bulletPosition.Y < 4 && bullet.Position.Z > -12 && bullet.Position.Z < -8 && bullet.IsVisible) //placeholder for collision
@@ -220,22 +240,26 @@ namespace CamTest
                     Exit(); //closes game when quit button hit
                 }
             }
-            foreach(Bullet bullet in bulletList)
+            foreach (Bullet bullet in bulletList)
             {
-                if(bullet.IsVisible)
-                foreach (Target target in targetList)
+                if (bullet.IsVisible)
                 {
-                    if (target.IsVisible && Vector3.Distance(bullet.bulletPosition, target.targetPosition) < 1.5f)  //checks if bullet is within a circle of radius 2 and if so removes the target and spawns a new one
+                    foreach (Target target in targetList)
                     {
-                        target.IsVisible = false;
-                        bullet.IsVisible = false;
-                        targetCount--;
-                        TargetsHit++;
-                        Accuracy = UpdateAccuracy(ShotsFired, TargetsHit);
-                        score += 100 * (Math.Abs(target.leftright) + Math.Abs(target.backforward) / 2);
+                        if (target.IsVisible && Vector3.Distance(bullet.bulletPosition, target.targetPosition) < 1.5f)  //checks if bullet is within a circle of radius 2 and if so removes the target and spawns a new one
+                        {
+                            target.IsVisible = false;
+                            bullet.IsVisible = false;
+                            targetCount--;
+                            TargetsHit++;
+                            Accuracy = UpdateAccuracy(ShotsFired, TargetsHit);
+                            score += 100 * (Math.Abs(target.leftright) + Math.Abs(target.backforward) / 2);
+                            averagetime = UpdateAverageTime(totaltime, TargetsHit);
+                        }
                     }
                 }
             }
+            
         }
 
         public void UpdateObjects(GameTime gt) 
@@ -314,9 +338,9 @@ namespace CamTest
             return (int)((TargetsHit / ShotsFired) * 100);
         }
 
-        public int UpdateAverageTime(int averagetime, int temptime)
+        public double UpdateAverageTime(double averagetime, double temptime)
         {
-            return (averagetime + temptime / 60) / 2;
+            return ((averagetime + temptime) / TargetsHit) / 60;
         }
 
         /// <summary>
@@ -384,16 +408,27 @@ namespace CamTest
                     }
             }
             spriteBatch.Begin(); //hud
-            spriteBatch.Draw(SquareTexture, Square1, Color.White);  //crosshair
-            spriteBatch.Draw(SquareTexture, Square2, Color.White);//crosshair
-            spriteBatch.Draw(SquareTexture, Square3, Color.White);//crosshair
-            spriteBatch.Draw(SquareTexture, Square4, Color.White);//crosshair
-            spriteBatch.DrawString(spriteFont, "Accuracy: " + Accuracy + "% ", new Vector2(5, 10), Color.White);
-            spriteBatch.DrawString(spriteFont, "Targets Hit: " + TargetsHit, new Vector2(5, 30), Color.White);
-            spriteBatch.DrawString(spriteFont, "Shots Fired: " + ShotsFired, new Vector2(5, 50), Color.White);
-            spriteBatch.DrawString(spriteFont, ""+cam.Position, new Vector2(5, 70), Color.White);
-            spriteBatch.DrawString(spriteFont, "Dash Ready? " + cam.dashReady, new Vector2(5, 90), Color.White);
-            spriteBatch.DrawString(spriteFont, "" + score, new Vector2(5, 110), Color.White);
+            if(GameOver == false)
+            {
+                spriteBatch.Draw(SquareTexture, Square1, Color.White);//crosshair
+                spriteBatch.Draw(SquareTexture, Square2, Color.White);//crosshair
+                spriteBatch.Draw(SquareTexture, Square3, Color.White);//crosshair
+                spriteBatch.Draw(SquareTexture, Square4, Color.White);//crosshair
+                spriteBatch.DrawString(spriteFont16, "Accuracy: " + Accuracy + "% ", new Vector2(5, 10), Color.White);
+                spriteBatch.DrawString(spriteFont16, "Targets Hit: " + TargetsHit, new Vector2(5, 30), Color.White);
+                spriteBatch.DrawString(spriteFont16, "Shots Fired: " + ShotsFired, new Vector2(5, 50), Color.White);
+                spriteBatch.DrawString(spriteFont16, "XYZ: " + cam.Position, new Vector2(5, 70), Color.White);
+                spriteBatch.DrawString(spriteFont16, "Dash Ready? " + cam.dashReady, new Vector2(5, 90), Color.White);
+                spriteBatch.DrawString(spriteFont16, "AverageTime: " + averagetime, new Vector2(5, 110), Color.White);
+                spriteBatch.DrawString(spriteFont16, "Score: " + score, new Vector2(5, 130), Color.White);
+            }
+            else
+            {
+                spriteBatch.Draw(FinalSquareTexture, FinalSquare, Color.Black);
+                spriteBatch.DrawString(spriteFont50, "Game Over", new Vector2(220, 50), Color.White);
+                spriteBatch.DrawString(spriteFont50, "Final Score: " + finalScore, new Vector2(220, 210), Color.White);
+            }
+
             spriteBatch.End();
         }
 
