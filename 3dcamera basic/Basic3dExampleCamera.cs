@@ -29,6 +29,7 @@ namespace CamTest //can double jump if jump while crouched - fix
         public bool sprinting = false;
         private bool forwardBack = false;
         private bool leftRight = false;
+        public bool settings;
 
         /// <summary>
         /// this serves as the cameras up for fixed cameras this might not change at all ever.
@@ -134,7 +135,8 @@ namespace CamTest //can double jump if jump while crouched - fix
             KeyboardState kstate = Keyboard.GetState();
             // mouse controls
             RotateLeftOrRight(gameTime, -MouseMovement().X);         //mouse look left/right
-            RotateUpOrDown(gameTime, -MouseMovement().Y);            // mouse look up/down
+            RotateUpOrDown(gameTime, -MouseMovement().Y);            //mouse look up/down
+            if(!settings)
             Mouse.SetPosition(400, 240);
 
             // movement controls

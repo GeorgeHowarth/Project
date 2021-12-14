@@ -30,7 +30,10 @@ namespace CamTest
         private Rectangle Square2 = new Rectangle(new Point(401, 245), new Point(2)); //crosshair
         private Rectangle Square3 = new Rectangle(new Point(401, 240), new Point(2)); //crosshair
         private Rectangle Square4 = new Rectangle(new Point(404, 242), new Point(2)); //crosshair
-        private Rectangle FinalSquare = new Rectangle(new Point(0, 0), new Point(5000000));
+        private Rectangle SensSquare = new Rectangle(new Point(560, 85), new Point(40,25));
+        private Rectangle SliderSquare;
+        private Rectangle FinalSquare = new Rectangle(new Point(0, 0), new Point(800));
+        private Rectangle Slider = new Rectangle(new Point(250, 100), new Point(300, 2));
         private readonly Grid3dOrientation worldGrid = new Grid3dOrientation(20, 20, .01f);
         private readonly OrientationLines orientationLines = new OrientationLines(.2f, 1f);
         private Texture2D textureForward;
@@ -137,11 +140,24 @@ namespace CamTest
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            if(cam.settings)
+            {
+                if(Mouse.GetState().Position.Y > 85 && Mouse.GetState().Position.Y < 110 && Mouse.GetState().LeftButton == ButtonState.Pressed)
+                SliderSquare = new Rectangle(new Point(Mouse.GetState().Position.X, 95), new Point(6,10));
+                if (SliderSquare.X < 250)
+                    SliderSquare.X = 250;
+                if (SliderSquare.X > 550)
+                    SliderSquare.X = 550;
+                cam.sensitivity = calculateSensitivity();
+            }
             if(Keyboard.GetState().IsKeyDown(Keys.M) && temp)
             {
                 GameOver = !GameOver;
                 finalScore = Convert.ToInt32(score * (Accuracy / 100) * (averagetime / 5));
                 temp = false;
+                bulletList.Clear();
+                targetList.Clear();
+                targetCount = 0;
             }
             if (Keyboard.GetState().IsKeyUp(Keys.M) && !temp)
                 temp = true;
@@ -158,17 +174,19 @@ namespace CamTest
                 targetList.Clear();
                 targetCount = 0;
                 temp = false;
+                TargetsHit = 0;
+                ShotsFired = 0;
+                totaltime = 0;
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.L) && temp)
-            {
-                targetList.RemoveAt(0);
-                targetCount--;
-                temp = false;
-            }
-            //if (Keyboard.GetState().IsKeyUp(Keys.L) && !temp)
-            //    temp = true;
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+            {
+                if (cam.settings)
+                {
+                    cam.settings = false;
+                    IsMouseVisible = false;
+                }
                 cam.Position = new Vector3(0, 2, 10);
+            }
             
             cam.Update(gameTime);
             beffect.View = cam.ViewMatrix;
@@ -231,8 +249,9 @@ namespace CamTest
                 //settings
                 if (bullet.bulletPosition.X > -11 && bullet.bulletPosition.X < -7 && bullet.bulletPosition.Y > 1 && bullet.bulletPosition.Y < 4 && bullet.Position.Z > -12 && bullet.Position.Z < -8 && bullet.IsVisible) //placeholder for collision
                 {
-                    Buttons[1].IsVisible = !Buttons[1].IsVisible;
+                    cam.settings = true;
                     bullet.IsVisible = false;
+                    IsMouseVisible = true;
                 }
                 //quit
                 if (bullet.bulletPosition.X > 9 && bullet.bulletPosition.X < 13 && bullet.bulletPosition.Y > 1 && bullet.bulletPosition.Y < 4 && bullet.Position.Z > -12 && bullet.Position.Z < -8 && bullet.IsVisible) //placeholder for collision
@@ -246,7 +265,7 @@ namespace CamTest
                 {
                     foreach (Target target in targetList)
                     {
-                        if (target.IsVisible && Vector3.Distance(bullet.bulletPosition, target.targetPosition) < 1.5f)  //checks if bullet is within a circle of radius 2 and if so removes the target and spawns a new one
+                        if (target.IsVisible && Vector3.Distance(bullet.bulletPosition, target.targetPosition) < 1.5f)  //checks if bullet is within a circle of radius 1.5 and if so removes the target and spawns a new one
                         {
                             target.IsVisible = false;
                             bullet.IsVisible = false;
@@ -262,6 +281,10 @@ namespace CamTest
             
         }
 
+        public double calculateSensitivity()
+        {
+            return (((SliderSquare.X - 250) / 5) + 1)/ 60;
+        }
         public void UpdateObjects(GameTime gt) 
         {
             foreach (Bullet bullet in bulletList)               //this piece of code handles how each bullet moves
@@ -427,6 +450,16 @@ namespace CamTest
                 spriteBatch.Draw(FinalSquareTexture, FinalSquare, Color.Black);
                 spriteBatch.DrawString(spriteFont50, "Game Over", new Vector2(220, 50), Color.White);
                 spriteBatch.DrawString(spriteFont50, "Final Score: " + finalScore, new Vector2(220, 210), Color.White);
+            }
+            if(cam.settings)
+            {
+                spriteBatch.Draw(FinalSquareTexture, FinalSquare, Color.Black);
+                spriteBatch.DrawString(spriteFont50, "Settings", new Vector2(275, 0), Color.White);
+                spriteBatch.DrawString(spriteFont16, "Sensitivity:", new Vector2(150, 90), Color.White);
+                spriteBatch.Draw(SquareTexture, Slider, Color.White);
+                spriteBatch.Draw(SquareTexture, SliderSquare, Color.White);
+                spriteBatch.Draw(SquareTexture, SensSquare, Color.White);
+                spriteBatch.DrawString(spriteFont16, "" + cam.sensitivity, new Vector2(562, 86), Color.Blue);
             }
 
             spriteBatch.End();
