@@ -14,6 +14,9 @@ namespace CamTest
 {
     public class Game1 : Game
     {
+        private bool posX;
+        private bool posY;
+        private bool posZ;
         private float TargetsHit = 0;
         private float ShotsFired = 0;
         private float Accuracy;
@@ -148,7 +151,7 @@ namespace CamTest
                     SliderSquare.X = 250;
                 if (SliderSquare.X > 550)
                     SliderSquare.X = 550;
-                cam.sensitivity = calculateSensitivity();
+                cam.sensitivity = (float)calculateSensitivity();
             }
             if(Keyboard.GetState().IsKeyDown(Keys.M) && temp)
             {
@@ -283,7 +286,7 @@ namespace CamTest
 
         public double calculateSensitivity()
         {
-            return (((SliderSquare.X - 250) / 5) + 1)/ 60;
+            return ((((double)SliderSquare.X - 250) / 5) + 1)/ 60;
         }
         public void UpdateObjects(GameTime gt) 
         {
@@ -304,26 +307,34 @@ namespace CamTest
                     bullet.IsVisible = false;
                 }
             }
-            foreach (Target target in targetList)               //this piece of code handles how each target moves
+            //foreach (Target target in targetList)               //this piece of code handles how each target moves
+            //{
+            //    if (target.IsVisible)
+            //    {
+            //        target.targetsWorld = Matrix.CreateTranslation(target.Position);
+            //        target.targetsWorld = Matrix.CreateWorld(target.targetsWorld.Translation, target.targetsWorld.Forward, Vector3.Up);
+            //        if (target.Counter < 120)
+            //        {
+            //            target.Position += (new Vector3(target.leftright,0,target.backforward)* 1.5f) * (float)gt.ElapsedGameTime.TotalSeconds;
+            //            target.Counter++;
+            //        }
+            //        else if (target.Counter < 240)
+            //        {
+            //            target.Position += (new Vector3(target.leftright,0,target.backforward) * -1.5f) * (float)gt.ElapsedGameTime.TotalSeconds;
+            //            target.Counter++;
+            //        }
+            //        else if (target.Counter >= 240)
+            //        {
+            //            target.Counter = 0;
+            //        }
+            //    }
+            //}
+            foreach (Target target in targetList)
             {
-                if (target.IsVisible)
+                if(target.IsVisible)
                 {
-                    target.targetsWorld = Matrix.CreateTranslation(target.Position);
-                    target.targetsWorld = Matrix.CreateWorld(target.targetsWorld.Translation, target.targetsWorld.Forward, Vector3.Up);
-                    if (target.Counter < 120)
-                    {
-                        target.Position += (new Vector3(target.leftright,0,target.backforward)* 1.5f) * (float)gt.ElapsedGameTime.TotalSeconds;
-                        target.Counter++;
-                    }
-                    else if (target.Counter < 240)
-                    {
-                        target.Position += (new Vector3(target.leftright,0,target.backforward) * -1.5f) * (float)gt.ElapsedGameTime.TotalSeconds;
-                        target.Counter++;
-                    }
-                    else if (target.Counter >= 240)
-                    {
-                        target.Counter = 0;
-                    }
+                    target.targetsWorld.Forward *= (Math.Acos(((cam.Position * target.Position)/(Math.Sqrt((cam.Position.X * cam.Position.X) + (cam.Position.Y * cam.Position.Y) + (cam.Position.Z * cam.Position.Z))* (Math.Sqrt((target.Position.X * target.Position.X) + (target.Position.Y * target.Position.Y) + (target.Position.Z * target.Position.Z)));
+                    target.Position += (target.targetsWorld.Forward * 1f) * (float)gt.ElapsedGameTime.TotalSeconds;
                 }
             }
             foreach (Target button in Buttons)
