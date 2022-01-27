@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <SourceFile>H:/Computer Science/Project-main/Project-main/3dcamera basic/Content/settings.fbx</SourceFile>
-  <SourceTime>2022-01-13T09:00:19.4377295+00:00</SourceTime>
-  <DestFile>H:/Computer Science/Project-main/Project-main/3dcamera basic/Content/bin/Windows/Content/settings.xnb</DestFile>
-  <DestTime>2022-01-13T09:50:31.881484+00:00</DestTime>
+  <SourceFile>H:/Computer Science/Project-main/Project-main/3dcamera basic/Content/globe-sphere.fbx</SourceFile>
+  <SourceTime>2022-01-13T09:00:19.3757674+00:00</SourceTime>
+  <DestFile>H:/Computer Science/Project-main/Project-main/3dcamera basic/Content/bin/Windows/globe-sphere.xnb</DestFile>
+  <DestTime>2022-01-25T10:58:03.4189234+00:00</DestTime>
   <Importer>FbxImporter</Importer>
   <ImporterTime>2018-09-23T22:55:52+01:00</ImporterTime>
   <Processor>ModelProcessor</Processor>
   <ProcessorTime>2018-09-23T22:55:52+01:00</ProcessorTime>
   <Parameters>
     <Key>ColorKeyColor</Key>
-    <Value>0,0,0,0</Value>
+    <Value>255,8,8,0</Value>
   </Parameters>
   <Parameters>
     <Key>ColorKeyEnabled</Key>
@@ -54,7 +54,7 @@
   </Parameters>
   <Parameters>
     <Key>Scale</Key>
-    <Value>1</Value>
+    <Value>2.5</Value>
   </Parameters>
   <Parameters>
     <Key>SwapWindingOrder</Key>
