@@ -1,0 +1,19 @@
+            if (zombies)
+            {
+                foreach (Target target in targetList)
+                {
+                    if (target.IsVisible)
+                    {
+                        target.LookAtDirection = cam.Position - target.Position;
+                        target.Position += (target.targetsWorld.Forward * 5f) * (float)gt.ElapsedGameTime.TotalSeconds;
+                    }
+                }
+                foreach (Target button in Buttons)
+                {
+                    button.targetsWorld = Matrix.CreateWorld(Matrix.CreateTranslation(button.Position).Translation, button.targetsWorld.Forward, Vector3.Up);
+                }
+                foreach (Target target in targetList)
+                {
+                    target.targetsWorld = Matrix.CreateWorld(Matrix.CreateTranslation(target.Position).Translation, target.targetsWorld.Forward, Vector3.Up);
+                }
+            }
