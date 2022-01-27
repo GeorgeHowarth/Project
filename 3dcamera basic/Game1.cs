@@ -195,7 +195,7 @@ namespace CamTest
                     else
                     {
                         newround = false;
-                        zombiecount = Math.Round(int(zombiecount * 1.5));
+                        zombiecount = (int)Math.Round(zombiecount * 1.5, 0, MidpointRounding.AwayFromZero);
                     }
                 }
             }
