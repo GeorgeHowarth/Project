@@ -14,18 +14,18 @@ namespace CamTest
 {
     public class Game1 : Game
     {
-        private bool posX;
-        private bool posY;
-        private bool posZ;
-        private float TargetsHit = 0;
-        private float ShotsFired = 0;
-        private float Accuracy;
+        //private settings _settings = new settings();
+        private bool targets = false;
+        private bool zombies = true;
+        public float TargetsHit = 0;
+        public float ShotsFired = 0;
+        public float Accuracy;
         private SpriteFont spriteFont16;
         private SpriteFont spriteFont50;
         private readonly GraphicsDeviceManager graphics;
-        private SpriteBatch spriteBatch;
+        public SpriteBatch spriteBatch;
         private BasicEffect beffect;
-        private Basic3dExampleCamera cam;
+        public Player cam;
         private Matrix camWorldObjectToVisualize = Matrix.Identity;
         private Texture2D SquareTexture;
         private Texture2D FinalSquareTexture;
@@ -33,7 +33,7 @@ namespace CamTest
         private Rectangle Square2 = new Rectangle(new Point(401, 245), new Point(2)); //crosshair
         private Rectangle Square3 = new Rectangle(new Point(401, 240), new Point(2)); //crosshair
         private Rectangle Square4 = new Rectangle(new Point(404, 242), new Point(2)); //crosshair
-        private Rectangle SensSquare = new Rectangle(new Point(560, 85), new Point(40,25));
+        private Rectangle SensSquare = new Rectangle(new Point(560, 85), new Point(40, 25));
         private Rectangle SliderSquare;
         private Rectangle FinalSquare = new Rectangle(new Point(0, 0), new Point(800));
         private Rectangle Slider = new Rectangle(new Point(250, 100), new Point(300, 2));
@@ -48,11 +48,13 @@ namespace CamTest
         private readonly Random rnd = new Random();
         private bool temp = true;
         private BasicEffect basicEffect;
-        private int score = 0;
-        private double averagetime = 0;
-        private int totaltime;
-        private bool GameOver = false;
-        private int finalScore;
+        public int score = 0;
+        public double averagetime = 0;
+        public int totaltime;
+        public bool GameOver = false;
+        public int finalScore;
+        private int zombiecount = 5;
+        private bool newround;
         //shooting
 
 
@@ -73,7 +75,7 @@ namespace CamTest
 
             Target startButton = new Target();
             //creates the start button
-            startButton.Position = new Vector3(0,3,-10);
+            startButton.Position = new Vector3(0, 3, -10);
             startButton.model = Content.Load<Model>(@"start");
             Buttons[0] = startButton;
 
@@ -98,15 +100,18 @@ namespace CamTest
 
             spriteFont16 = Content.Load<SpriteFont>(@"16");
             spriteFont50 = Content.Load<SpriteFont>(@"50");
+
         }
 
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            //_settings.spriteBatch = spriteBatch;
             beffect = new BasicEffect(GraphicsDevice);
-            cam = new Basic3dExampleCamera(GraphicsDevice);
+            cam = new Player(GraphicsDevice);
             cam.Position = new Vector3(0, 1, 10);
             cam.Target = Vector3.Zero;
+
 
             SquareTexture = new Texture2D(GraphicsDevice, 1, 1);
             SquareTexture.SetData(new Color[] { Color.White });
@@ -126,7 +131,7 @@ namespace CamTest
             basicEffect.View = Matrix.CreateLookAt(new Vector3(50, 50, 50), new Vector3(0, 0, 0), Vector3.Up);
             basicEffect.Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45f), GraphicsDevice.Viewport.AspectRatio, 1f, 1000f);
             IsMouseVisible = false;
-
+            //_settings.LoadContent();
         }
 
         protected override void UnloadContent()
@@ -143,19 +148,21 @@ namespace CamTest
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if(cam.settings)
+            //_settings.Update();
+            if (cam.settings)
             {
-                if(Mouse.GetState().Position.Y > 85 && Mouse.GetState().Position.Y < 110 && Mouse.GetState().LeftButton == ButtonState.Pressed)
-                SliderSquare = new Rectangle(new Point(Mouse.GetState().Position.X, 95), new Point(6,10));
+                if (Mouse.GetState().Position.Y > 85 && Mouse.GetState().Position.Y < 110 && Mouse.GetState().LeftButton == ButtonState.Pressed)
+                    SliderSquare = new Rectangle(new Point(Mouse.GetState().Position.X, 95), new Point(6, 10));
                 if (SliderSquare.X < 250)
                     SliderSquare.X = 250;
                 if (SliderSquare.X > 550)
                     SliderSquare.X = 550;
                 cam.sensitivity = (float)calculateSensitivity();
             }
-            if(Keyboard.GetState().IsKeyDown(Keys.M) && temp)
+            if (Keyboard.GetState().IsKeyDown(Keys.M) && temp)
             {
                 GameOver = !GameOver;
+                //_settings.GameOver = GameOver;
                 finalScore = Convert.ToInt32(score * (Accuracy / 100) * (averagetime / 5));
                 temp = false;
                 bulletList.Clear();
@@ -167,10 +174,30 @@ namespace CamTest
 
             totaltime++;
             MouseState state = Mouse.GetState();
-            if (targetCount < 5)
+            if (targetCount < 5 && targets)
             {
                 CreateNewTarget();
                 targetCount++;
+            }
+            if(zombies)
+            {
+                if (targetCount == 0)
+                {
+                    newround = true;
+                }
+                if(newround)
+                {
+                    if (targetCount < zombiecount)
+                    {
+                        CreateNewTarget();
+                        targetCount++;
+                    }
+                    else
+                    {
+                        newround = false;
+                        zombiecount = Math.Round(int(zombiecount * 1.5));
+                    }
+                }
             }
             if (Keyboard.GetState().IsKeyDown(Keys.K)) //reset targets
             {
@@ -190,7 +217,7 @@ namespace CamTest
                 }
                 cam.Position = new Vector3(0, 2, 10);
             }
-            
+
             cam.Update(gameTime);
             beffect.View = cam.ViewMatrix;
 
@@ -225,9 +252,9 @@ namespace CamTest
                 int leftorright = Convert.ToInt32(Math.Round(random));
                 cam.RotateUpOrDown(gameTime, uprecoil);       //upwards recoil is 5 when standing
                 cam.RotateLeftOrRight(gameTime, leftorright);     //right recoil is random between 2 to the left and 2 to the right but changed based on movement
-                                                                      //end recoil code
-               ShotsFired++;
-               Accuracy = UpdateAccuracy(ShotsFired, TargetsHit);
+                                                                  //end recoil code
+                ShotsFired++;
+                Accuracy = UpdateAccuracy(ShotsFired, TargetsHit);
             }
             if (!canshoot)
             {
@@ -270,9 +297,21 @@ namespace CamTest
                     {
                         if (target.IsVisible && Vector3.Distance(bullet.bulletPosition, target.targetPosition) < 1.5f)  //checks if bullet is within a circle of radius 1.5 and if so removes the target and spawns a new one
                         {
-                            target.IsVisible = false;
+                            if(zombies)
+                            {
+                                target.health -= 25;
+                                if (target.health <= 0)
+                                {
+                                    target.IsVisible = false;
+                                    targetCount--;
+                                }
+                            }
+                            else
+                            {
+                                target.IsVisible = false;
+                                targetCount--;
+                            }
                             bullet.IsVisible = false;
-                            targetCount--;
                             TargetsHit++;
                             Accuracy = UpdateAccuracy(ShotsFired, TargetsHit);
                             score += 100 * (Math.Abs(target.leftright) + Math.Abs(target.backforward) / 2);
@@ -281,14 +320,32 @@ namespace CamTest
                     }
                 }
             }
-            
+            if(zombies)
+            {
+                foreach (Target target in targetList)
+                {
+                    if (target.IsVisible && Vector3.Distance(cam.Position, target.targetPosition) < 5f)
+                    {
+                        target.damagecounter++;
+                    }
+                    else
+                    {
+                        target.damagecounter = 0;
+                    }
+                    if (target.damagecounter > 80)
+                    {
+                        cam.health -= 50;
+                        target.damagecounter = 0;
+                    }
+                }
+            }
         }
 
         public double calculateSensitivity()
         {
-            return ((((double)SliderSquare.X - 250) / 5) + 1)/ 60;
+            return ((((double)SliderSquare.X - 250) / 5) + 1) / 60;
         }
-        public void UpdateObjects(GameTime gt) 
+        public void UpdateObjects(GameTime gt)
         {
             foreach (Bullet bullet in bulletList)               //this piece of code handles how each bullet moves
             {
@@ -307,34 +364,40 @@ namespace CamTest
                     bullet.IsVisible = false;
                 }
             }
-            //foreach (Target target in targetList)               //this piece of code handles how each target moves
-            //{
-            //    if (target.IsVisible)
-            //    {
-            //        target.targetsWorld = Matrix.CreateTranslation(target.Position);
-            //        target.targetsWorld = Matrix.CreateWorld(target.targetsWorld.Translation, target.targetsWorld.Forward, Vector3.Up);
-            //        if (target.Counter < 120)
-            //        {
-            //            target.Position += (new Vector3(target.leftright,0,target.backforward)* 1.5f) * (float)gt.ElapsedGameTime.TotalSeconds;
-            //            target.Counter++;
-            //        }
-            //        else if (target.Counter < 240)
-            //        {
-            //            target.Position += (new Vector3(target.leftright,0,target.backforward) * -1.5f) * (float)gt.ElapsedGameTime.TotalSeconds;
-            //            target.Counter++;
-            //        }
-            //        else if (target.Counter >= 240)
-            //        {
-            //            target.Counter = 0;
-            //        }
-            //    }
-            //}
-            foreach (Target target in targetList)
+            if (targets)
             {
-                if(target.IsVisible)
+                foreach (Target target in targetList)               //this piece of code handles how each target moves
                 {
-                    target.targetsWorld.Forward *= (Math.Acos(((cam.Position * target.Position)/(Math.Sqrt((cam.Position.X * cam.Position.X) + (cam.Position.Y * cam.Position.Y) + (cam.Position.Z * cam.Position.Z))* (Math.Sqrt((target.Position.X * target.Position.X) + (target.Position.Y * target.Position.Y) + (target.Position.Z * target.Position.Z)));
-                    target.Position += (target.targetsWorld.Forward * 1f) * (float)gt.ElapsedGameTime.TotalSeconds;
+                    if (target.IsVisible)
+                    {
+                        target.targetsWorld = Matrix.CreateTranslation(target.Position);
+                        target.targetsWorld = Matrix.CreateWorld(target.targetsWorld.Translation, target.targetsWorld.Forward, Vector3.Up);
+                        if (target.Counter < 120)
+                        {
+                            target.Position += (new Vector3(target.leftright, 0, target.backforward) * 1.5f) * (float)gt.ElapsedGameTime.TotalSeconds;
+                            target.Counter++;
+                        }
+                        else if (target.Counter < 240)
+                        {
+                            target.Position += (new Vector3(target.leftright, 0, target.backforward) * -1.5f) * (float)gt.ElapsedGameTime.TotalSeconds;
+                            target.Counter++;
+                        }
+                        else if (target.Counter >= 240)
+                        {
+                            target.Counter = 0;
+                        }
+                    }
+                }
+            }
+            if (zombies)
+            {
+                foreach (Target target in targetList)
+                {
+                    if (target.IsVisible)
+                    {
+                        target.LookAtDirection = cam.Position - target.Position;
+                        target.Position += (target.targetsWorld.Forward * 5f) * (float)gt.ElapsedGameTime.TotalSeconds;
+                    }
                 }
             }
             foreach (Target button in Buttons)
@@ -367,7 +430,7 @@ namespace CamTest
             targetList.Add(temp);
         }
 
-        public int UpdateAccuracy(float ShotsFired,float TargetsHit)
+        public int UpdateAccuracy(float ShotsFired, float TargetsHit)
         {
             return (int)((TargetsHit / ShotsFired) * 100);
         }
@@ -396,18 +459,18 @@ namespace CamTest
 
             foreach (Target button in Buttons)
             {
-                if(button.IsVisible)
-                foreach (ModelMesh mesh in button.model.Meshes)
-                {
-                    foreach (BasicEffect effect in mesh.Effects)
+                if (button.IsVisible)
+                    foreach (ModelMesh mesh in button.model.Meshes)
                     {
-                        effect.EnableDefaultLighting();
-                        effect.World = button.targetsWorld;
-                        effect.View = cam.ViewMatrix;
-                        effect.Projection = cam.ProjectionMatrix;
+                        foreach (BasicEffect effect in mesh.Effects)
+                        {
+                            effect.EnableDefaultLighting();
+                            effect.World = button.targetsWorld;
+                            effect.View = cam.ViewMatrix;
+                            effect.Projection = cam.ProjectionMatrix;
+                        }
+                        mesh.Draw();
                     }
-                    mesh.Draw();
-                }
             }
 
             foreach (Target target in targetList)
@@ -441,8 +504,9 @@ namespace CamTest
                         mesh.Draw();
                     }
             }
+            //_settings.Draw();
             spriteBatch.Begin(); //hud
-            if(GameOver == false)
+            if (GameOver == false)
             {
                 spriteBatch.Draw(SquareTexture, Square1, Color.White);//crosshair
                 spriteBatch.Draw(SquareTexture, Square2, Color.White);//crosshair
@@ -455,6 +519,7 @@ namespace CamTest
                 spriteBatch.DrawString(spriteFont16, "Dash Ready? " + cam.dashReady, new Vector2(5, 90), Color.White);
                 spriteBatch.DrawString(spriteFont16, "AverageTime: " + averagetime, new Vector2(5, 110), Color.White);
                 spriteBatch.DrawString(spriteFont16, "Score: " + score, new Vector2(5, 130), Color.White);
+                spriteBatch.DrawString(spriteFont16, "Health: " + cam.health, new Vector2(5, 150), Color.White);
             }
             else
             {
@@ -462,7 +527,7 @@ namespace CamTest
                 spriteBatch.DrawString(spriteFont50, "Game Over", new Vector2(220, 50), Color.White);
                 spriteBatch.DrawString(spriteFont50, "Final Score: " + finalScore, new Vector2(220, 210), Color.White);
             }
-            if(cam.settings)
+            if (cam.settings)
             {
                 spriteBatch.Draw(FinalSquareTexture, FinalSquare, Color.Black);
                 spriteBatch.DrawString(spriteFont50, "Settings", new Vector2(275, 0), Color.White);
@@ -476,37 +541,36 @@ namespace CamTest
             spriteBatch.End();
         }
 
-        //creates the checkerboard pattern
-        public static Texture2D CreateCheckerBoard(GraphicsDevice device, int w, int h, Color c0, Color c1)
-        {
-            Color[] data = new Color[w * h];
-            for (int x = 0; x < w; x++)
+            //creates the checkerboard pattern
+            public static Texture2D CreateCheckerBoard(GraphicsDevice device, int w, int h, Color c0, Color c1)
             {
-                for (int y = 0; y < h; y++)
+                Color[] data = new Color[w * h];
+                for (int x = 0; x < w; x++)
                 {
-                    int index = y * w + x;
-                    Color c = c0;
-                    if ((y % 2 == 0))
+                    for (int y = 0; y < h; y++)
                     {
-                        if ((x % 2 == 0))
-                            c = c0;
+                        int index = y * w + x;
+                        Color c = c0;
+                        if ((y % 2 == 0))
+                        {
+                            if ((x % 2 == 0))
+                                c = c0;
+                            else
+                                c = c1;
+                        }
                         else
-                            c = c1;
+                        {
+                            if ((x % 2 == 0))
+                                c = c1;
+                            else
+                                c = c0;
+                        }
+                        data[index] = c;
                     }
-                    else
-                    {
-                        if ((x % 2 == 0))
-                            c = c1;
-                        else
-                            c = c0;
-                    }
-                    data[index] = c;
                 }
+                Texture2D tex = new Texture2D(device, w, h);
+                tex.SetData<Color>(data);
+                return tex;
             }
-            Texture2D tex = new Texture2D(device,w,h);
-            tex.SetData<Color>(data);
-            return tex;
         }
-    }
-}
-
+    } 

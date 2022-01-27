@@ -9,8 +9,9 @@ using Microsoft.Xna.Framework.Input;
 
 namespace CamTest //can double jump if jump while crouched - fix
 {
-    public class Basic3dExampleCamera
+    public class Player
     {
+        public int health = 100;
         private readonly GraphicsDevice graphicsDevice = null;
         public float sensitivity = 20f;
         bool invertControls = false;
@@ -50,7 +51,7 @@ namespace CamTest //can double jump if jump while crouched - fix
         /// <summary>
         /// Constructs the camera.
         /// </summary>
-        public Basic3dExampleCamera(GraphicsDevice gfxDevice)
+        public Player(GraphicsDevice gfxDevice)
         {
             graphicsDevice = gfxDevice;
             ReCreateWorldAndView();

@@ -21,6 +21,8 @@ namespace CamTest
         public int Counter;
         public int leftright;
         public int backforward;
+        public int health = 100;
+        public int damagecounter = 0;
 
         public Vector3 targetPosition
         {
@@ -30,6 +32,14 @@ namespace CamTest
                 targetsWorld = Matrix.CreateWorld(targetsWorld.Translation, targetsWorld.Forward, Up); //sets and gets the position of the bullet
             }
             get { return targetsWorld.Translation; }
+        }
+        public Vector3 LookAtDirection
+        {
+            set
+            {
+                targetsWorld = Matrix.CreateWorld(targetsWorld.Translation, value, Up);
+            }
+            get { return targetsWorld.Forward * 10; }
         }
     }
 }   
