@@ -15,6 +15,7 @@ namespace CamTest
     public class Game1 : Game
     {
         //private settings _settings = new settings();
+        private List<ModelMesh> MapMeshes = new List<ModelMesh>();
         private bool targets = false;
         private bool zombies = true;
         public float TargetsHit = 0;
@@ -27,8 +28,8 @@ namespace CamTest
         private BasicEffect beffect;
         public Player cam;
         private Matrix camWorldObjectToVisualize = Matrix.Identity;
-        private Texture2D SquareTexture;
-        private Texture2D FinalSquareTexture;
+        private Texture2D WhiteSquareTexture;
+        private Texture2D BlackSquareTexture;
         private Rectangle Square1 = new Rectangle(new Point(398, 242), new Point(2)); //crosshair
         private Rectangle Square2 = new Rectangle(new Point(401, 245), new Point(2)); //crosshair
         private Rectangle Square3 = new Rectangle(new Point(401, 240), new Point(2)); //crosshair
@@ -37,6 +38,10 @@ namespace CamTest
         private Rectangle SliderSquare;
         private Rectangle FinalSquare = new Rectangle(new Point(0, 0), new Point(800));
         private Rectangle Slider = new Rectangle(new Point(250, 100), new Point(300, 2));
+        private Rectangle InvertXSquare = new Rectangle(new Point(225, 113), new Point(14));
+        private Rectangle InvertYSquare = new Rectangle(new Point(225, 133), new Point(14));
+        private Rectangle InvertXCheck = new Rectangle(new Point(227, 115), new Point(10));
+        private Rectangle InvertYCheck = new Rectangle(new Point(227, 135), new Point(10));
         private readonly Grid3dOrientation worldGrid = new Grid3dOrientation(20, 20, .01f);
         private readonly OrientationLines orientationLines = new OrientationLines(.2f, 1f);
         private Texture2D textureForward;
@@ -65,8 +70,10 @@ namespace CamTest
 
         public Game1()
         {
+
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            graphics.GraphicsProfile = GraphicsProfile.HiDef;
         }
 
         protected override void Initialize()
@@ -77,7 +84,7 @@ namespace CamTest
             //creates the start button
             startButton.Position = new Vector3(0, 3, -10);
             startButton.model = Content.Load<Model>(@"start");
-            Buttons[0] = startButton;
+            Buttons[3] = startButton;
 
             Target settingsButton = new Target();
             //creates the settings button
@@ -90,13 +97,13 @@ namespace CamTest
             quitButton.Position = new Vector3(10, 3, -10);
             quitButton.model = Content.Load<Model>(@"quit");
             Buttons[2] = quitButton;
-
+            
             Target room = new Target();
             //placeholder for floor at actual game area
             room.IsVisible = true;
-            room.Position = new Vector3(100, -25, 0);
-            room.model = Content.Load<Model>(@"cube");
-            Buttons[3] = room;
+            room.Position = new Vector3(500, 0, 0);
+            room.model = Content.Load<Model>(@"mapAttempt31");
+            Buttons[0] = room;
 
             spriteFont16 = Content.Load<SpriteFont>(@"16");
             spriteFont50 = Content.Load<SpriteFont>(@"50");
@@ -113,10 +120,10 @@ namespace CamTest
             cam.Target = Vector3.Zero;
 
 
-            SquareTexture = new Texture2D(GraphicsDevice, 1, 1);
-            SquareTexture.SetData(new Color[] { Color.White });
-            FinalSquareTexture = new Texture2D(GraphicsDevice, 1, 1);
-            FinalSquareTexture.SetData(new Color[] { Color.Black });
+            WhiteSquareTexture = new Texture2D(GraphicsDevice, 1, 1);
+            WhiteSquareTexture.SetData(new Color[] { Color.White });
+            BlackSquareTexture = new Texture2D(GraphicsDevice, 1, 1);
+            BlackSquareTexture.SetData(new Color[] { Color.Black });
 
             textureForward = CreateCheckerBoard(GraphicsDevice, 20, 20, Color.Red, Color.Red);      // creates red X CheckerBoard
             textureRight = CreateCheckerBoard(GraphicsDevice, 20, 20, Color.Yellow, Color.Yellow);  // creates yellow Y CheckerBoard
@@ -270,7 +277,7 @@ namespace CamTest
                 //start
                 if (bullet.bulletPosition.X > -1 && bullet.bulletPosition.X < 3 && bullet.bulletPosition.Y > 1 && bullet.bulletPosition.Y < 4 && bullet.Position.Z > -12 && bullet.Position.Z < -8 && bullet.IsVisible) //placeholder for collision
                 {
-                    cam.Position = new Vector3(100, 2, 0); // starts the game
+                    cam.Position = new Vector3(500, 2, 0); // starts the game
                     bullet.IsVisible = false;
                     TargetsHit = 0;
                     ShotsFired = 0;
@@ -343,7 +350,7 @@ namespace CamTest
 
         public double calculateSensitivity()
         {
-            return ((((double)SliderSquare.X - 250) / 5) + 1) / 60;
+            return (((SliderSquare.X - 249f) / 100f));
         }
         public void UpdateObjects(GameTime gt)
         {
@@ -447,7 +454,6 @@ namespace CamTest
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.DeepSkyBlue);
-
             GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
 
             worldGrid.DrawWithBasicEffect(GraphicsDevice, beffect, Matrix.Identity, 30f, textureForward, textureRight, textureUp);
@@ -464,7 +470,9 @@ namespace CamTest
                     {
                         foreach (BasicEffect effect in mesh.Effects)
                         {
-                            effect.EnableDefaultLighting();
+                            GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+                            //effect.PreferPerPixelLighting = true;
+                            //effect.EnableDefaultLighting
                             effect.World = button.targetsWorld;
                             effect.View = cam.ViewMatrix;
                             effect.Projection = cam.ProjectionMatrix;
@@ -508,10 +516,10 @@ namespace CamTest
             spriteBatch.Begin(); //hud
             if (GameOver == false)
             {
-                spriteBatch.Draw(SquareTexture, Square1, Color.White);//crosshair
-                spriteBatch.Draw(SquareTexture, Square2, Color.White);//crosshair
-                spriteBatch.Draw(SquareTexture, Square3, Color.White);//crosshair
-                spriteBatch.Draw(SquareTexture, Square4, Color.White);//crosshair
+                spriteBatch.Draw(WhiteSquareTexture, Square1, Color.White);//crosshair
+                spriteBatch.Draw(WhiteSquareTexture, Square2, Color.White);//crosshair
+                spriteBatch.Draw(WhiteSquareTexture, Square3, Color.White);//crosshair
+                spriteBatch.Draw(WhiteSquareTexture, Square4, Color.White);//crosshair
                 spriteBatch.DrawString(spriteFont16, "Accuracy: " + Accuracy + "% ", new Vector2(5, 10), Color.White);
                 spriteBatch.DrawString(spriteFont16, "Targets Hit: " + TargetsHit, new Vector2(5, 30), Color.White);
                 spriteBatch.DrawString(spriteFont16, "Shots Fired: " + ShotsFired, new Vector2(5, 50), Color.White);
@@ -523,19 +531,25 @@ namespace CamTest
             }
             else
             {
-                spriteBatch.Draw(FinalSquareTexture, FinalSquare, Color.Black);
+                spriteBatch.Draw(BlackSquareTexture, FinalSquare, Color.Black);
                 spriteBatch.DrawString(spriteFont50, "Game Over", new Vector2(220, 50), Color.White);
                 spriteBatch.DrawString(spriteFont50, "Final Score: " + finalScore, new Vector2(220, 210), Color.White);
             }
             if (cam.settings)
             {
-                spriteBatch.Draw(FinalSquareTexture, FinalSquare, Color.Black);
+                spriteBatch.Draw(BlackSquareTexture, FinalSquare, Color.Black);
                 spriteBatch.DrawString(spriteFont50, "Settings", new Vector2(275, 0), Color.White);
                 spriteBatch.DrawString(spriteFont16, "Sensitivity:", new Vector2(150, 90), Color.White);
-                spriteBatch.Draw(SquareTexture, Slider, Color.White);
-                spriteBatch.Draw(SquareTexture, SliderSquare, Color.White);
-                spriteBatch.Draw(SquareTexture, SensSquare, Color.White);
+                spriteBatch.Draw(WhiteSquareTexture, Slider, Color.White);
+                spriteBatch.Draw(WhiteSquareTexture, SliderSquare, Color.White);
+                spriteBatch.Draw(WhiteSquareTexture, SensSquare, Color.White);
                 spriteBatch.DrawString(spriteFont16, "" + cam.sensitivity, new Vector2(562, 86), Color.Blue);
+                spriteBatch.Draw(WhiteSquareTexture, InvertXSquare, Color.White);
+                spriteBatch.Draw(WhiteSquareTexture, InvertYSquare, Color.White);
+                if (cam.invertX)
+                    spriteBatch.Draw(BlackSquareTexture, InvertXCheck, Color.Black);
+                if (cam.invertY)
+                    spriteBatch.Draw(BlackSquareTexture, InvertYCheck, Color.Black);
             }
 
             spriteBatch.End();

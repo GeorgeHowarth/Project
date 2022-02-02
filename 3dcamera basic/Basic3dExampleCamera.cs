@@ -12,9 +12,10 @@ namespace CamTest //can double jump if jump while crouched - fix
     public class Player
     {
         public int health = 100;
-        private readonly GraphicsDevice graphicsDevice = null;
+        public readonly GraphicsDevice graphicsDevice = null;
         public float sensitivity = 20f;
-        bool invertControls = false;
+        public bool invertX = false;
+        public bool invertY = false;
         private float unitsPerSecond = 5;
         private readonly float unitsPerSecondSprint = 10;
         private float gravity = 0;
@@ -23,7 +24,7 @@ namespace CamTest //can double jump if jump while crouched - fix
         public bool dashReady = true;
         private readonly float FieldOfView = MathHelper.PiOver4;
         private readonly float ShortRender = 0.01f;
-        private readonly float LongRender = 100f;        //render distance
+        private readonly float LongRender = 10000f;        //render distance
         public bool moving = false;
         public bool jumping = false;
         public bool crouching = false;
@@ -290,7 +291,7 @@ namespace CamTest //can double jump if jump while crouched - fix
 
         public void RotateLeftOrRight(GameTime gameTime, float amount) //mouse look left/right
         {
-            if (invertControls)
+            if (invertX)
                 amount = -amount;
             var radians = amount * -sensitivity * (float)gameTime.ElapsedGameTime.TotalSeconds;
             Matrix matrix = Matrix.CreateFromAxisAngle(camerasWorld.Up, MathHelper.ToRadians(radians));
@@ -300,7 +301,7 @@ namespace CamTest //can double jump if jump while crouched - fix
         }
         public void RotateUpOrDown(GameTime gameTime, float amount) //mouse look up/down
         {
-            if (invertControls)
+            if (invertY)
                 amount = -amount;
             var radians = amount * -sensitivity * (float)gameTime.ElapsedGameTime.TotalSeconds;
             Matrix matrix = Matrix.CreateFromAxisAngle(camerasWorld.Right, MathHelper.ToRadians(radians));
