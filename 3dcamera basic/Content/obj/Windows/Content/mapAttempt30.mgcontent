@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SourceFile>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/mapAttempt30.fbx</SourceFile>
+  <SourceTime>2022-01-28T23:14:17.2566166+00:00</SourceTime>
+  <DestFile>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/mapAttempt30.xnb</DestFile>
+  <DestTime>2022-01-28T23:37:13.2559879+00:00</DestTime>
+  <Importer>FbxImporter</Importer>
+  <ImporterTime>2018-12-08T16:35:54+00:00</ImporterTime>
+  <Processor>ModelProcessor</Processor>
+  <ProcessorTime>2018-12-08T16:35:54+00:00</ProcessorTime>
+  <Parameters>
+    <Key>ColorKeyColor</Key>
+    <Value>0,0,0,0</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ColorKeyEnabled</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>DefaultEffect</Key>
+    <Value>BasicEffect</Value>
+  </Parameters>
+  <Parameters>
+    <Key>GenerateMipmaps</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>GenerateTangentFrames</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>PremultiplyTextureAlpha</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>PremultiplyVertexColors</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ResizeTexturesToPowerOfTwo</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>RotationX</Key>
+    <Value>270</Value>
+  </Parameters>
+  <Parameters>
+    <Key>RotationY</Key>
+    <Value>0</Value>
+  </Parameters>
+  <Parameters>
+    <Key>RotationZ</Key>
+    <Value>0</Value>
+  </Parameters>
+  <Parameters>
+    <Key>Scale</Key>
+    <Value>0.01</Value>
+  </Parameters>
+  <Parameters>
+    <Key>SwapWindingOrder</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Compressed</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset>
+    <string>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/../../../../Downloads/source/de_dust2_material_0_0.xnb</string>
+    <string>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/../../../../Downloads/source/de_dust2_material_1_0.xnb</string>
+    <string>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/../../../../Downloads/source/de_dust2_material_2_0.xnb</string>
+    <string>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/../../../../Downloads/source/de_dust2_material_3_0.xnb</string>
+    <string>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/../../../../Downloads/source/de_dust2_material_4_0.xnb</string>
+    <string>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/../../../../Downloads/source/de_dust2_material_5_0.xnb</string>
+    <string>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/../../../../Downloads/source/de_dust2_material_6_0.xnb</string>
+    <string>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/../../../../Downloads/source/de_dust2_material_7_0.xnb</string>
+    <string>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/../../../../Downloads/source/de_dust2_material_8_0.xnb</string>
+    <string>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/../../../../Downloads/source/de_dust2_material_9_0.xnb</string>
+    <string>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/../../../../Downloads/source/de_dust2_material_10_0.xnb</string>
+    <string>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/../../../../Downloads/source/de_dust2_material_11_0.xnb</string>
+    <string>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/../../../../Downloads/source/de_dust2_material_12_0.xnb</string>
+    <string>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/../../../../Downloads/source/de_dust2_material_13_0.xnb</string>
+    <string>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/../../../../Downloads/source/de_dust2_material_14_0.xnb</string>
+    <string>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/../../../../Downloads/source/de_dust2_material_15_0.xnb</string>
+    <string>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/../../../../Downloads/source/de_dust2_material_16_0.xnb</string>
+    <string>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/../../../../Downloads/source/de_dust2_material_17_0.xnb</string>
+    <string>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/../../../../Downloads/source/de_dust2_material_18_0.xnb</string>
+    <string>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/../../../../Downloads/source/de_dust2_material_19_0.xnb</string>
+    <string>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/../../../../Downloads/source/de_dust2_material_20_0.xnb</string>
+    <string>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/../../../../Downloads/source/de_dust2_material_21_0.xnb</string>
+    <string>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/../../../../Downloads/source/de_dust2_material_22_0.xnb</string>
+    <string>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/../../../../Downloads/source/de_dust2_material_23_0.xnb</string>
+    <string>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/../../../../Downloads/source/de_dust2_material_24_0.xnb</string>
+    <string>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/../../../../Downloads/source/de_dust2_material_25_0.xnb</string>
+    <string>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/../../../../Downloads/source/de_dust2_material_26_0.xnb</string>
+    <string>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/../../../../Downloads/source/de_dust2_material_27_0.xnb</string>
+    <string>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/../../../../Downloads/source/de_dust2_material_28_0.xnb</string>
+    <string>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/../../../../Downloads/source/de_dust2_material_29_0.xnb</string>
+    <string>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/../../../../Downloads/source/de_dust2_material_30_0.xnb</string>
+    <string>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/../../../../Downloads/source/de_dust2_material_31_0.xnb</string>
+    <string>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/../../../../Downloads/source/de_dust2_material_32_0.xnb</string>
+    <string>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/Content/../../../../Downloads/source/de_dust2_material_33_0.xnb</string>
+  </BuildAsset>
+  <BuildOutput />
+</PipelineBuildEvent>
