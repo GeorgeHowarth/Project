@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <SourceFile>H:/Computer Science/Project-main/Project-main/3dcamera basic/Content/16.spritefont</SourceFile>
-  <SourceTime>2022-01-13T09:00:19.0979379+00:00</SourceTime>
-  <DestFile>H:/Computer Science/Project-main/Project-main/3dcamera basic/Content/bin/Windows/16.xnb</DestFile>
-  <DestTime>2022-01-25T10:58:01.3718903+00:00</DestTime>
+  <SourceFile>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/16.spritefont</SourceFile>
+  <SourceTime>2022-01-27T10:47:16+00:00</SourceTime>
+  <DestFile>C:/Users/georg/Desktop/Project-main/3dcamera basic/Content/bin/Windows/16.xnb</DestFile>
+  <DestTime>2022-01-28T23:37:09.4051206+00:00</DestTime>
   <Importer>FontDescriptionImporter</Importer>
-  <ImporterTime>2018-09-23T22:55:52+01:00</ImporterTime>
+  <ImporterTime>2018-12-08T16:35:54+00:00</ImporterTime>
   <Processor>FontDescriptionProcessor</Processor>
-  <ProcessorTime>2018-09-23T22:55:52+01:00</ProcessorTime>
+  <ProcessorTime>2018-12-08T16:35:54+00:00</ProcessorTime>
   <Parameters>
     <Key>PremultiplyAlpha</Key>
     <Value>True</Value>
