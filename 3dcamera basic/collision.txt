@@ -1,0 +1,38 @@
+        UPDATE;:
+                   foreach (Target x in targetList)
+            {
+                foreach (Target y in targetList)
+                {
+                    if (x != y)
+                        CheckForCollisions(x, y);
+                }
+            }
+        
+        
+        
+        
+        
+        
+        
+        static void CheckForCollisions(Target c1, Target c2)
+        {
+            for (int i = 0; i < c1.model.Meshes.Count; i++)
+            {
+                // Check whether the bounding boxes of the two cubes intersect.
+                BoundingSphere c1BoundingSphere = c1.model.Meshes[i].BoundingSphere;
+                c1BoundingSphere.Center += c1.Position;
+
+                for (int j = 0; j < c2.model.Meshes.Count; j++)
+                {
+                    BoundingSphere c2BoundingSphere = c2.model.Meshes[j].BoundingSphere;
+                    c2BoundingSphere.Center += c2.Position;
+
+                    if (c1BoundingSphere.Intersects(c2BoundingSphere))
+                    {
+                        c1.Velocity = 0;
+                        c2.Position += (c2.targetsWorld.Right * 1.00000001f);
+                        return;
+                    }
+                }
+            }
+        }
