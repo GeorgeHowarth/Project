@@ -14,7 +14,7 @@
         
         
         
-        static void CheckForCollisions(Target c1, Target c2)
+        static void CheckForCollisions(Target c1, Target c2, Player cam)
         {
             for (int i = 0; i < c1.model.Meshes.Count; i++)
             {
@@ -29,9 +29,10 @@
 
                     if (c1BoundingSphere.Intersects(c2BoundingSphere))
                     {
-                        c1.Velocity = 0;
-                        c2.Position += (c2.targetsWorld.Right * 1.00000001f);
-                        return;
+                        if(Vector3.Distance(c1.Position, cam.Position) < Vector3.Distance(c2.Position, cam.Position))
+                        {
+                            c2.Velocity = 0;
+                        }
                     }
                 }
             }
